@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.6</title>
+<title>Live Life v5.8</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -312,7 +312,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.6</div>
+    <div class="version-badge">v5.8</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -641,7 +641,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.6';
+const VER = 'Live Life v5.8';
 
 // --- STATE---
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
@@ -652,7 +652,7 @@ const S = {
   slots: JSON.parse(localStorage.getItem('rw_slots') || '[]'),
   cast: JSON.parse(localStorage.getItem('rw_cast') || '[]'),
   customSugs: JSON.parse(localStorage.getItem('rw_customSugs') || '[]'),
-  proxyUrl: localStorage.getItem('rw_proxy') || '',
+  proxyUrl: localStorage.getItem('rw_proxy') || 'https://blue-base-9603.af-francieli.workers.dev',
   charName: localStorage.getItem('rw_charName') || 'Mini Fran',
   charDesc: localStorage.getItem('rw_charDesc') || 'A young Brazilian woman in her early 40s, long highlighted blonde hair, bronzed skin, slim figure, elegant natural lifestyle style',
   gradeActive: false,
@@ -666,6 +666,10 @@ const THUMBS = ['thumb-pink','thumb-mint','thumb-yellow','thumb-blue','thumb-pur
 // --- INIT---
 function init() {
   // Salva chave automaticamente se não estava salva
+  // Salva proxy automaticamente
+  if (!localStorage.getItem('rw_proxy')) {
+    localStorage.setItem('rw_proxy', 'https://blue-base-9603.af-francieli.workers.dev');
+  }
   if (!localStorage.getItem('rw_key') && RUNWAY_KEY) {
     localStorage.setItem('rw_key', RUNWAY_KEY);
   }
@@ -1162,13 +1166,10 @@ async function genSingle() {
   await generateScene(scene);
 }
 
-// URL do proxy Cloudflare Worker (substitua pela sua URL apos deploy)
-const PROXY_URL = S.proxyUrl || 'https://livelife-proxy.SEU-USUARIO.workers.dev';
+const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
 
 async function callRunway(path, method, body) {
-  // Tenta chamar via proxy (resolve CORS)
   const proxyUrl = localStorage.getItem('rw_proxy') || PROXY_URL;
-  
   try {
     const res = await fetch(proxyUrl, {
       method: 'POST',
