@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v4.3</title>
+<title>Live Life v4.6</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -282,7 +282,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v4.3</div>
+    <div class="version-badge">v4.6</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -386,9 +386,9 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <div class="sec-title" style="margin-bottom:8px"><div class="sec-dot" style="background:var(--blue)"></div>Foto do local (opcional)</div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <label for="photoUpload" class="btn btn-outline" style="cursor:pointer;flex:1;text-align:center">
-          📷 Tirar/escolher foto
+          📷 Câmera ou galeria
         </label>
-        <input type="file" id="photoUpload" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto(this)" />
+        <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="previewPhoto(this)" />
         <button class="btn btn-ghost btn-sm" onclick="clearPhoto()">✕ Sem foto</button>
       </div>
       <div id="photoPreview" style="display:none;margin-top:8px;border-radius:12px;overflow:hidden;border:2px solid var(--blue)">
@@ -937,7 +937,9 @@ async function genSingle() {
 }
 
 async function generateScene(scene) {
-  scene.status='generating'; scene.progress=5; save(); renderGrid();
+  scene.status='generating'; scene.progress=5; scene.startedAt=Date.now(); save(); renderGrid();
+  // Auto-refresh grid a cada segundo para atualizar o timer
+  const timerInterval = setInterval(() => { if(scene.status==='generating') renderGrid(); else clearInterval(timerInterval); }, 1000);
 
   // Se não tem API key, gera prévia local
   if (!S.key) {
@@ -978,28 +980,7 @@ async function generateScene(scene) {
   }
 }
 
-async function pollScene(scene, slot) {
-  for (let i=0;i<60;i++) {
-    await sleep(5000);
-    try {
-      const res = await fetch('/.netlify/functions/runway', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '/tasks/' + scene.taskId, method: 'GET', apiKey: S.key })
-      });
-      const data=await res.json();
-      scene.progress=Math.min(90,((i+1)/60)*100); save(); renderGrid();
-      if(data.status==='SUCCEEDED'){
-        scene.status='done'; scene.videoUrl=data.output[0]; scene.progress=100; scene.isPreview=false;
-        if(slot){slot.status='done'; saveSlots(); renderTimeline();}
-        save(); renderGrid(); renderSummary();
-        toast('🎬 Vídeo pronto: '+scene.freeText.substring(0,25)+'...','ok');
-        return;
-      }
-      if(data.status==='FAILED') throw new Error('Geração falhou no Runway');
-    } catch(e){ if(i>=59){scene.status='error';save();renderGrid();toast('Timeout Runway','err');} }
-  }
-}
+// pollScene definida abaixo
 
 function generateLocalPreview(text, char, period) {
   const t = text.toLowerCase();
@@ -1043,22 +1024,49 @@ function generateLocalPreview(text, char, period) {
 }
 
 async function pollScene(scene, slot) {
-  for (let i=0;i<60;i++) {
+  const MAX_TIME = 90000; // 1.5 minutos
+  const start = Date.now();
+  let attempts = 0;
+
+  while (Date.now() - start < MAX_TIME) {
     await sleep(5000);
+    attempts++;
     try {
-      const res=await fetch(`https://api.dev.runwayml.com/v1/tasks/${scene.taskId}`,{headers:{'Authorization':`Bearer ${S.key}`,'X-Runway-Version':'2024-11-06'}});
-      const data=await res.json();
-      scene.progress=Math.min(90,((i+1)/60)*100); save(); renderGrid();
-      if(data.status==='SUCCEEDED'){
-        scene.status='done'; scene.videoUrl=data.output[0]; scene.progress=100;
-        if(slot){slot.status='done'; saveSlots(); renderTimeline();}
+      const res = await fetch('/.netlify/functions/runway', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: '/tasks/' + scene.taskId, method: 'GET', apiKey: S.key })
+      });
+      const data = await res.json();
+      const elapsed = Date.now() - start;
+      scene.progress = Math.min(90, (elapsed / MAX_TIME) * 100);
+      save(); renderGrid();
+
+      if (data.status === 'SUCCEEDED') {
+        scene.status = 'done'; scene.videoUrl = data.output[0]; scene.progress = 100;
+        if (slot) { slot.status = 'done'; saveSlots(); renderTimeline(); }
         save(); renderGrid(); renderSummary();
-        toast('✅ Cena pronta: '+scene.freeText.substring(0,25)+'...','ok');
+        toast('🎬 Vídeo pronto!', 'ok');
         return;
       }
-      if(data.status==='FAILED') throw new Error('Falhou');
-    } catch(e){ if(i>=59){scene.status='error';save();renderGrid();} }
+      if (data.status === 'FAILED') {
+        const reason = data.failure || data.failureCode || 'Runway rejeitou a geração';
+        throw new Error(reason);
+      }
+    } catch(e) {
+      scene.status = 'error';
+      scene.errorMsg = e.message;
+      save(); renderGrid();
+      toast('❌ Erro: ' + e.message, 'err');
+      return;
+    }
   }
+
+  // Timeout de 1.5 min
+  scene.status = 'error';
+  scene.errorMsg = 'Timeout — Runway demorou mais de 1.5 min. Tente gerar novamente.';
+  save(); renderGrid();
+  toast('⏱ Timeout! Tente gerar novamente.', 'err');
 }
 
 // ─── RENDER GRID ───
@@ -1077,7 +1085,13 @@ function renderGrid() {
         ? `<img src="${s.photoBase64}" style="width:100%;height:100%;object-fit:cover;opacity:0.7"/><div class="status-overlay" style="background:rgba(255,255,255,0.5)"><div style="font-size:20px">📷</div><div style="font-size:10px;font-weight:700;color:var(--text)">foto carregada</div></div>`
         : `<div class="thumb-icon">🎬</div>`;
     }
-    else if(s.status==='generating') thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:11px;color:var(--purple);font-weight:700">criando prévia...</div><div class="prog-bar"><div class="prog-fill" style="width:${s.progress||5}%"></div></div></div><div class="thumb-icon">🎬</div>`;
+    else if(s.status==='generating') {
+      const elapsed = s.startedAt ? Math.floor((Date.now() - s.startedAt)/1000) : 0;
+      const mins = Math.floor(elapsed/60); const secs = elapsed%60;
+      const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+      const pct = Math.min(95, s.progress||5);
+      thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:16px;color:var(--purple);font-weight:800;margin-top:4px">${Math.round(pct)}%</div><div class="prog-bar" style="margin-top:4px;width:80%"><div class="prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--text2);margin-top:4px">⏱ ${timeStr} · ~2-3min total</div></div><div class="thumb-icon">🎬</div>`;
+    }
     else if(s.status==='done' && s.preview) {
       thumb=`<div style="width:100%;height:100%;background:linear-gradient(135deg,${s.preview.cor_dominante||'#ffb6c1'},${s.preview.cor_secundaria||'#c8a2c8'});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px">
         <div style="font-size:32px">${s.preview.emoji_cena||'🎬'}</div>
@@ -1086,7 +1100,7 @@ function renderGrid() {
     }
     else if(s.status==='done') thumb=`<div class="thumb-icon">✅</div>`;
     else if(s.status==='reused') thumb=`<div class="thumb-icon">♻️</div>`;
-    else thumb=`<div class="thumb-icon">❌</div>`;
+    else if(s.status==='error') thumb=`<div style="background:var(--coral-light);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px"><div style="font-size:24px">❌</div><div style="font-size:10px;color:var(--coral);font-weight:700;text-align:center;line-height:1.4">${s.errorMsg||'Erro na geração'}</div></div>`;
     const short=s.freeText.length>42?s.freeText.substring(0,42)+'…':s.freeText;
     return `<div class="scene-card" onclick="openModal('${s.id}')">
       <div class="scene-thumb ${s.thumbColor||'thumb-pink'}">${thumb}</div>
