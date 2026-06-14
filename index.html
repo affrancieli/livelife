@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v4.0</title>
+<title>Live Life v4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -282,7 +282,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v4.0</div>
+    <div class="version-badge">v4.1</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -783,7 +783,7 @@ async function triggerSlot(slot) {
     const res = await fetch('/.netlify/functions/runway', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, model: 'gen4_5', ratio: '1280:720', duration: 5 } })
+      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, model: 'gen4.5', ratio: '1280:720', duration: 5 } })
     });
     if (!res.ok) { const e=await res.json(); throw new Error(JSON.stringify(e)); }
     const data = await res.json();
@@ -912,7 +912,7 @@ async function generateScene(scene) {
     const res = await fetch('/.netlify/functions/runway', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: scene.prompt, model: 'gen4_5', ratio: '1280:720', duration: 5 } })
+      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: scene.prompt, model: 'gen4.5', ratio: '1280:720', duration: 5 } })
     });
     if(!res.ok){const e=await res.json();throw new Error(JSON.stringify(e));}
     const data=await res.json();
