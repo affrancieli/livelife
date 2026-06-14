@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v4.2</title>
+<title>Live Life v4.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -282,7 +282,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v4.2</div>
+    <div class="version-badge">v4.3</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -379,6 +379,23 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <option value="parceiro">👨 Parceiro</option>
         <option value="familia">👨‍👩‍👧 Família</option>
       </select>
+    </div>
+
+    <!-- FOTO DO LOCAL -->
+    <div style="margin-top:12px">
+      <div class="sec-title" style="margin-bottom:8px"><div class="sec-dot" style="background:var(--blue)"></div>Foto do local (opcional)</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label for="photoUpload" class="btn btn-outline" style="cursor:pointer;flex:1;text-align:center">
+          📷 Tirar/escolher foto
+        </label>
+        <input type="file" id="photoUpload" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto(this)" />
+        <button class="btn btn-ghost btn-sm" onclick="clearPhoto()">✕ Sem foto</button>
+      </div>
+      <div id="photoPreview" style="display:none;margin-top:8px;border-radius:12px;overflow:hidden;border:2px solid var(--blue)">
+        <img id="photoImg" style="width:100%;max-height:180px;object-fit:cover" />
+        <div style="padding:6px 10px;font-size:11px;color:var(--text2);background:var(--blue-light)">✅ Foto carregada — Mini Fran vai aparecer nesse ambiente!</div>
+      </div>
+      <div id="noPhotoNote" style="font-size:11px;color:var(--text2);margin-top:6px;font-weight:600">🤖 Sem foto: sistema gera o ambiente automaticamente</div>
     </div>
     <div class="btn-row">
       <button class="btn btn-ghost" style="flex:1" onclick="convertPrompt()">✦ Converter</button>
@@ -783,7 +800,7 @@ async function triggerSlot(slot) {
     const res = await fetch('/.netlify/functions/runway', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, promptImage: null, model: 'gen4.5', ratio: '1280:720', duration: 5 } })
+      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, ratio: '1280:720', duration: 5 } })
     });
     if (!res.ok) { const e=await res.json(); throw new Error(JSON.stringify(e)); }
     const data = await res.json();
@@ -848,6 +865,31 @@ Reply with ONLY the prompt text.`}]
   }
 }
 
+// ─── FOTO DO LOCAL ───
+let currentPhotoBase64 = null;
+
+function previewPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    currentPhotoBase64 = e.target.result; // base64 completo com data:image/...
+    document.getElementById('photoImg').src = currentPhotoBase64;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('noPhotoNote').style.display = 'none';
+    toast('📷 Foto carregada!', 'ok');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto() {
+  currentPhotoBase64 = null;
+  document.getElementById('photoUpload').value = '';
+  document.getElementById('photoPreview').style.display = 'none';
+  document.getElementById('noPhotoNote').style.display = 'block';
+  toast('Foto removida — sistema vai gerar automaticamente');
+}
+
 function addSceneManual() {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
@@ -860,6 +902,7 @@ function addSceneManual() {
     prompt: S.convertedPrompt || buildPrompt(free, char),
     char, period:getPeriod(now.getHours()),
     status:'pending', videoUrl:null, taskId:null, progress:0,
+    photoBase64: currentPhotoBase64 || null,
     createdAt:now.toISOString(),
     timeLabel:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
     dateLabel:now.toLocaleDateString('pt-BR'),
@@ -872,6 +915,7 @@ function addSceneManual() {
   document.getElementById('freeInput').value='';
   document.getElementById('convBox').style.display='none';
   S.convertedPrompt='';
+  clearPhoto();
   renderGrid(); renderSummary();
   toast('🎬 Cena adicionada!', 'ok');
   navTo('fila');
@@ -909,10 +953,19 @@ async function generateScene(scene) {
 
   // Com API key: via Netlify Function (evita CORS)
   try {
+    const videoBody = {
+      promptText: scene.prompt,
+      ratio: '1280:720',
+      duration: 5
+    };
+    // Se tem foto do local, envia para usar como ambiente
+    if (scene.photoBase64) {
+      videoBody.promptImage = scene.photoBase64;
+    }
     const res = await fetch('/.netlify/functions/runway', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: scene.prompt, promptImage: null, model: 'gen4.5', ratio: '1280:720', duration: 5 } })
+      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: videoBody })
     });
     if(!res.ok){const e=await res.json();throw new Error(JSON.stringify(e));}
     const data=await res.json();
@@ -1019,7 +1072,11 @@ function renderGrid() {
   const bm={pending:`<span class="badge b-pending">⏳ aguardando</span>`,generating:`<span class="badge b-generating">✨ gerando</span>`,done:`<span class="badge b-done">✅ pronto</span>`,reused:`<span class="badge b-reused">♻️ reutilizado</span>`,error:`<span class="badge b-error">❌ erro</span>`};
   grid.innerHTML=S.scenes.map(s=>{
     let thumb='';
-    if(s.status==='pending') thumb=`<div class="thumb-icon">🎬</div>`;
+    if(s.status==='pending') {
+      thumb = s.photoBase64
+        ? `<img src="${s.photoBase64}" style="width:100%;height:100%;object-fit:cover;opacity:0.7"/><div class="status-overlay" style="background:rgba(255,255,255,0.5)"><div style="font-size:20px">📷</div><div style="font-size:10px;font-weight:700;color:var(--text)">foto carregada</div></div>`
+        : `<div class="thumb-icon">🎬</div>`;
+    }
     else if(s.status==='generating') thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:11px;color:var(--purple);font-weight:700">criando prévia...</div><div class="prog-bar"><div class="prog-fill" style="width:${s.progress||5}%"></div></div></div><div class="thumb-icon">🎬</div>`;
     else if(s.status==='done' && s.preview) {
       thumb=`<div style="width:100%;height:100%;background:linear-gradient(135deg,${s.preview.cor_dominante||'#ffb6c1'},${s.preview.cor_secundaria||'#c8a2c8'});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px">
