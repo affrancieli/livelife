@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.8</title>
+<title>Live Life v5.9.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -37,8 +37,6 @@ body {
     radial-gradient(circle at 15% 20%, rgba(255,110,180,0.12) 0%, transparent 50%),
     radial-gradient(circle at 85% 70%, rgba(61,219,184,0.1) 0%, transparent 50%);
 }
-
-/* HEADER */
 header {
   background: var(--white);
   border-bottom: 2px solid var(--pink-light);
@@ -57,8 +55,6 @@ header {
 .dot.on { background:var(--mint); box-shadow:0 0 6px var(--mint); animation:pulse 2s infinite; }
 .dot.err { background:var(--coral); }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-
-/* TABS NAV */
 .nav-tabs {
   display:flex; background:var(--white);
   border-bottom:2px solid var(--pink-light);
@@ -73,25 +69,17 @@ header {
   letter-spacing:0.03em;
 }
 .nav-tab.active { color:var(--pink); border-bottom-color:var(--pink); }
-
-/* SCROLL */
 .scroll { overflow-y:auto; height:calc(100vh - 106px); }
 .page { display:none; }
 .page.active { display:block; }
-
-/* SECTION */
 .section { background:var(--white); border-radius:20px; margin:10px; padding:14px; box-shadow:var(--shadow); border:1.5px solid var(--border); }
 .sec-title { font-family:'Fredoka',sans-serif; font-size:13px; font-weight:500; color:var(--text2); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
 .sec-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-
-/* MOMENT CARD */
 .moment-card { background:linear-gradient(135deg,var(--pink),var(--purple)); border-radius:16px; padding:14px; color:white; margin-bottom:12px; position:relative; overflow:hidden; }
 .moment-card::before { content:''; position:absolute; top:-20px; right:-20px; width:90px; height:90px; background:rgba(255,255,255,0.1); border-radius:50%; }
 .mc-period { font-size:10px; font-weight:800; letter-spacing:0.15em; text-transform:uppercase; opacity:0.85; margin-bottom:3px; }
 .mc-title { font-family:'Fredoka',sans-serif; font-size:19px; font-weight:500; margin-bottom:2px; }
 .mc-sub { font-size:11px; opacity:0.8; }
-
-/* INPUTS */
 input, textarea, select {
   width:100%; background:var(--bg); border:2px solid var(--border);
   color:var(--text); padding:10px 12px;
@@ -101,8 +89,6 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus { border-color:var(--pink); box-shadow:0 0 0 3px rgba(255,110,180,0.08); }
 textarea { resize:none; min-height:80px; line-height:1.6; }
 textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400; }
-
-/* BUTTONS */
 .btn { font-family:'Fredoka',sans-serif; font-size:14px; font-weight:500; padding:10px 16px; border-radius:12px; border:none; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
 .btn:active { transform:scale(0.97); }
 .btn-pink { background:linear-gradient(135deg,var(--pink),var(--purple)); color:white; box-shadow:0 4px 12px rgba(255,110,180,0.3); }
@@ -117,57 +103,34 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .btn-xs { padding:4px 10px; font-size:11px; border-radius:8px; }
 .btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 .btn-full { width:100%; }
-
-/* CONVERTED */
 .converted-box { display:none; background:linear-gradient(135deg,var(--purple-light),var(--blue-light)); border:2px solid var(--purple); border-radius:12px; padding:12px; margin-top:10px; }
 .conv-label { font-size:10px; font-weight:800; letter-spacing:0.2em; color:var(--purple); text-transform:uppercase; margin-bottom:5px; font-family:'Fredoka',sans-serif; }
 .conv-text { font-size:12px; color:var(--text); line-height:1.6; font-style:italic; }
 .converting-ind { display:none; align-items:center; gap:8px; font-size:12px; color:var(--purple); padding:8px 0; font-weight:700; }
-
-/* SUGGESTIONS */
 .sug-list { display:flex; flex-direction:column; gap:7px; }
 .sug-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg); border:2px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s; }
 .sug-chip:hover { border-color:var(--pink); background:var(--pink-light); }
 .sug-ic { font-size:20px; flex-shrink:0; }
 .sug-txt { flex:1; font-size:13px; line-height:1.4; font-weight:600; }
 .sug-use { font-size:10px; font-weight:800; background:linear-gradient(135deg,var(--pink),var(--purple)); color:white; padding:3px 9px; border-radius:8px; flex-shrink:0; font-family:'Fredoka',sans-serif; }
-
-/* ── GRADE DO DIA ── */
 .grade-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .grade-date { font-family:'Fredoka',sans-serif; font-size:16px; color:var(--purple); }
-
-/* ADD HORÁRIO FORM */
 .add-slot-form { background:var(--purple-light); border:2px solid var(--purple); border-radius:16px; padding:14px; margin-bottom:14px; display:none; }
 .add-slot-form.open { display:block; }
 .form-row { display:flex; gap:8px; margin-bottom:8px; }
 .form-row input, .form-row select { flex:1; }
 .time-input { max-width:120px; }
-
-/* TIMELINE */
 .timeline { display:flex; flex-direction:column; gap:0; position:relative; }
 .timeline::before { content:''; position:absolute; left:44px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--pink-light),var(--purple-light)); z-index:0; }
-
-.slot-item {
-  display:flex; gap:0; align-items:flex-start;
-  position:relative; z-index:1; margin-bottom:4px;
-}
-
+.slot-item { display:flex; gap:0; align-items:flex-start; position:relative; z-index:1; margin-bottom:4px; }
 .slot-time-col { width:44px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; padding-top:10px; }
 .slot-time-text { font-size:11px; font-weight:800; color:var(--text2); font-family:'Fredoka',sans-serif; line-height:1; }
 .slot-dot-outer { width:14px; height:14px; border-radius:50%; border:2px solid var(--white); margin-top:4px; flex-shrink:0; }
-
-.slot-card {
-  flex:1; margin-left:10px;
-  background:var(--white); border:2px solid var(--border);
-  border-radius:14px; padding:10px 12px;
-  cursor:pointer; transition:all 0.2s;
-  box-shadow:0 2px 8px rgba(180,100,200,0.06);
-}
+.slot-card { flex:1; margin-left:10px; background:var(--white); border:2px solid var(--border); border-radius:14px; padding:10px 12px; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(180,100,200,0.06); }
 .slot-card:hover { border-color:var(--pink); }
 .slot-card.active-now { border-color:var(--pink); background:var(--pink-light); box-shadow:0 4px 16px rgba(255,110,180,0.2); }
 .slot-card.done-slot { border-color:var(--mint); background:var(--mint-light); opacity:0.75; }
 .slot-card.upcoming { opacity:0.7; }
-
 .slot-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
 .slot-label { font-size:13px; font-weight:700; flex:1; }
 .slot-badge { font-size:10px; font-weight:800; padding:2px 8px; border-radius:8px; font-family:'Fredoka',sans-serif; white-space:nowrap; }
@@ -175,11 +138,8 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .sb-done { background:var(--mint-light); color:#009970; }
 .sb-upcoming { background:var(--yellow-light); color:#b87a00; }
 .sb-generating { background:var(--purple-light); color:var(--purple); }
-
 .slot-desc { font-size:11px; color:var(--text2); line-height:1.5; }
 .slot-actions { display:flex; gap:6px; margin-top:8px; }
-
-/* QUEUE */
 .queue-grid { display:flex; flex-direction:column; gap:10px; }
 .scene-card { background:var(--white); border:2px solid var(--border); border-radius:16px; overflow:hidden; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(180,100,200,0.06); }
 .scene-card:hover { border-color:var(--pink); transform:translateY(-2px); }
@@ -203,8 +163,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .b-done { background:var(--mint-light); color:#009970; }
 .b-reused { background:var(--blue-light); color:#0066aa; }
 .b-error { background:var(--coral-light); color:#cc3300; }
-
-/* SUMMARY */
 .sum-card { border-radius:14px; padding:14px; margin-bottom:10px; border:2px solid transparent; }
 .sum-card.pink { background:var(--pink-light); border-color:rgba(255,110,180,0.3); }
 .sum-card.mint { background:var(--mint-light); border-color:rgba(61,219,184,0.3); }
@@ -212,8 +170,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .sum-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
 .sum-list li { font-size:12px; display:flex; gap:6px; line-height:1.5; font-weight:600; }
 .sum-list li::before { content:'✦'; color:var(--pink); flex-shrink:0; font-size:10px; margin-top:2px; }
-
-/* HISTORY */
 .search-wrap { position:relative; margin-bottom:12px; }
 .search-wrap input { padding-left:34px; }
 .search-wrap::before { content:'🔍'; position:absolute; left:10px; top:9px; font-size:14px; z-index:1; }
@@ -226,8 +182,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .he-tags { display:flex; flex-wrap:wrap; gap:3px; }
 .he-tag { font-size:10px; padding:2px 7px; background:var(--bg); border:1.5px solid var(--border); border-radius:8px; color:var(--text2); font-weight:700; }
 .he-tag.hl { border-color:var(--pink); color:var(--pink); background:var(--pink-light); }
-
-/* MODAL */
 .overlay { position:fixed; inset:0; background:rgba(45,32,64,0.7); display:none; align-items:flex-end; justify-content:center; z-index:1000; backdrop-filter:blur(6px); }
 .overlay.open { display:flex; }
 .modal { background:var(--white); border-radius:24px 24px 0 0; width:100%; max-width:560px; overflow:hidden; animation:slideUp 0.3s ease; max-height:90vh; overflow-y:auto; }
@@ -239,68 +193,34 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .modal-meta { font-size:11px; color:var(--text2); margin-bottom:10px; font-weight:600; }
 .modal-prompt { background:var(--purple-light); border:2px solid rgba(181,123,238,0.3); border-radius:10px; padding:10px 12px; font-size:11px; font-style:italic; line-height:1.6; margin-bottom:14px; }
 .modal-actions { display:flex; gap:8px; flex-wrap:wrap; }
-
-/* TOASTS */
 .toasts { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:9000; width:88%; max-width:300px; }
 .toast { background:var(--text); color:white; padding:10px 16px; border-radius:12px; font-size:12px; font-weight:700; text-align:center; animation:toastIn 0.3s ease; width:100%; font-family:'Fredoka',sans-serif; }
 .toast.ok { background:linear-gradient(135deg,var(--mint),var(--blue)); }
 .toast.err { background:linear-gradient(135deg,var(--coral),var(--pink)); }
 @keyframes toastIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-
 .spinner { width:16px; height:16px; border:3px solid var(--purple-light); border-top-color:var(--purple); border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
 @keyframes spin { to{transform:rotate(360deg)} }
-
 .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:36px 20px; text-align:center; gap:10px; }
 .empty-icon { font-size:44px; }
 .empty-text { font-size:13px; color:var(--text2); line-height:1.6; max-width:220px; font-weight:600; }
-
-/* DESKTOP LAYOUT */
 @media (min-width: 768px) {
   header { padding: 12px 32px; }
   .logo { font-size: 24px; }
   .nav-tabs { padding: 0 16px; }
   .nav-tab { font-size: 13px; padding: 12px 16px; }
   .scroll { padding: 0 calc(50% - 380px); }
-  .queue-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
-  }
+  .queue-grid { display: grid !important; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
   .section { border-radius: 16px; }
 }
-/* FORCE CLICKS */
 .nav-tab, .btn, .sug-chip { cursor: pointer !important; user-select:none; -webkit-user-select:none; }
-
-
-/* SETTINGS */
 .settings-row { display:flex; flex-direction:column; gap:10px; }
 .settings-row label { font-size:12px; font-weight:700; color:var(--text2); margin-bottom:4px; display:block; font-family:'Fredoka',sans-serif; letter-spacing:0.05em; }
-.role-chip {
-  padding:8px 4px; text-align:center; border-radius:10px;
-  font-size:11px; font-weight:700; cursor:pointer;
-  background:var(--bg); border:2px solid var(--border);
-  transition:all 0.15s; font-family:'Nunito',sans-serif;
-}
+.role-chip { padding:8px 4px; text-align:center; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer; background:var(--bg); border:2px solid var(--border); transition:all 0.15s; font-family:'Nunito',sans-serif; }
 .role-chip:hover { border-color:var(--purple); background:var(--purple-light); }
 .role-chip.active { background:linear-gradient(135deg,var(--pink),var(--purple)); color:white; border-color:transparent; }
-
-.cast-card {
-  display:flex; align-items:center; gap:12px;
-  padding:10px 12px; background:var(--bg);
-  border:2px solid var(--border); border-radius:12px;
-  margin-bottom:8px;
-}
-.cast-avatar {
-  width:48px; height:48px; border-radius:50%;
-  object-fit:cover; border:2px solid var(--purple);
-  flex-shrink:0;
-}
-.cast-avatar-placeholder {
-  width:48px; height:48px; border-radius:50%;
-  background:linear-gradient(135deg,var(--pink-light),var(--purple-light));
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px; flex-shrink:0; border:2px solid var(--border);
-}
+.cast-card { display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--bg); border:2px solid var(--border); border-radius:12px; margin-bottom:8px; }
+.cast-avatar { width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--purple); flex-shrink:0; }
+.cast-avatar-placeholder { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--pink-light),var(--purple-light)); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; border:2px solid var(--border); }
 .cast-info { flex:1; }
 .cast-name { font-weight:800; font-size:13px; font-family:'Fredoka',sans-serif; }
 .cast-alias { font-size:11px; color:var(--purple); font-weight:700; }
@@ -312,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.8</div>
+    <div class="version-badge">v5.9.1</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -328,29 +248,24 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 
 <div class="scroll">
 
-<!-- ════════ GRADE DO DIA ════════ -->
 <div class="page active" id="page-grade">
-
   <div class="section">
     <div class="moment-card" id="momentCard">
       <div class="mc-period" id="mcPeriod">—</div>
       <div class="mc-title" id="mcTitle">Carregando...</div>
       <div class="mc-sub" id="mcSub">—</div>
     </div>
-
     <div class="grade-header">
       <div class="grade-date" id="gradeDate">—</div>
       <button class="btn btn-pink btn-sm" onclick="toggleAddForm()">+ Horário</button>
     </div>
-
-    <!-- FORM ADICIONAR SLOT -->
     <div class="add-slot-form" id="addSlotForm">
       <div class="sec-title" style="margin-bottom:10px"><div class="sec-dot" style="background:var(--purple)"></div>Novo Horário</div>
       <div class="form-row">
         <input type="time" id="slotTime" class="time-input" />
         <input type="text" id="slotLabel" placeholder="Ex: Ir à academia" style="flex:2" />
       </div>
-      <textarea id="slotDesc" placeholder="Descreva a cena em português livre... Ex: chegando na academia, colocando fone, começando o treino" style="margin-bottom:8px"></textarea>
+      <textarea id="slotDesc" placeholder="Descreva a cena em português livre..." style="margin-bottom:8px"></textarea>
       <div class="form-row" style="margin-bottom:0">
         <select id="slotChar">
           <option value="mini_fran">👱‍♀️ Mini Fran</option>
@@ -363,39 +278,29 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <button class="btn btn-purple btn-sm" style="flex:2" onclick="addSlot()">✦ Adicionar à Grade</button>
       </div>
     </div>
-
-    <!-- TIMELINE -->
     <div class="timeline" id="timeline">
       <div class="empty-state">
         <div class="empty-icon">📅</div>
         <div class="empty-text">Toque em "+ Horário" para montar a grade do seu dia!</div>
       </div>
     </div>
-
     <div class="btn-row" style="margin-top:14px" id="gradeActions" style="display:none">
       <button class="btn btn-mint btn-sm btn-full" onclick="startGrade()">▶ Ativar Grade Automática</button>
     </div>
   </div>
-
 </div>
 
-<!-- ════════ NOVA CENA MANUAL ════════ -->
-
 <div class="page" id="page-cena">
-
   <div class="section">
     <div class="moment-card" id="momentCard2">
       <div class="mc-period" id="mcPeriod2">—</div>
       <div class="mc-title" id="mcTitle2">—</div>
       <div class="mc-sub" id="mcSub2">—</div>
     </div>
-
     <div class="sec-title"><div class="sec-dot" style="background:var(--purple)"></div>O que você está fazendo agora?</div>
-
     <textarea id="freeInput" placeholder="Ex: @minifran e @parceiro tomando café na cozinha..." oninput="showMentionHints(this);updateCharCount(this)"></textarea>
     <div id="charCount" style="font-size:10px;text-align:right;margin-top:3px;color:var(--text2);font-weight:700"></div>
     <div id="mentionHints" style="display:none;margin-top:6px;display:flex;flex-wrap:wrap;gap:5px"></div>
-
     <div class="converting-ind" id="convInd">
       <div class="spinner"></div>
       <span>Convertendo para prompt cinematográfico...</span>
@@ -404,7 +309,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <div class="conv-label">✦ Prompt para o Runway</div>
       <div class="conv-text" id="convText"></div>
     </div>
-
     <div class="btn-row" style="margin-top:10px">
       <select id="charSel" style="flex:1;min-width:130px">
         <option value="mini_fran">👱‍♀️ Mini Fran</option>
@@ -416,14 +320,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <input type="time" id="airTimeInput" style="width:100%;padding:9px 10px;font-size:13px;background:var(--bg);border:2px solid var(--border);border-radius:10px;color:var(--text);outline:none" />
       </div>
     </div>
-
-    <!-- FOTO DO LOCAL -->
     <div style="margin-top:12px">
       <div class="sec-title" style="margin-bottom:8px"><div class="sec-dot" style="background:var(--blue)"></div>Foto do local (opcional)</div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <label for="photoUpload" class="btn btn-outline" style="cursor:pointer;flex:1;text-align:center">
-          📷 Câmera ou galeria
-        </label>
+        <label for="photoUpload" class="btn btn-outline" style="cursor:pointer;flex:1;text-align:center">📷 Câmera ou galeria</label>
         <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="previewPhoto(this)" />
         <button class="btn btn-ghost btn-sm" onclick="clearPhoto()">✕ Sem foto</button>
       </div>
@@ -438,7 +338,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <button class="btn btn-pink btn-full" onclick="addSceneManual(event)">+ Adicionar Cena</button>
     </div>
   </div>
-
   <div class="section">
     <div class="sec-title" style="justify-content:space-between">
       <span style="display:flex;align-items:center;gap:6px"><div class="sec-dot" style="background:var(--yellow)"></div>Minhas Sugestões</span>
@@ -446,15 +345,11 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     </div>
     <div id="customSugList" style="display:flex;flex-direction:column;gap:7px"></div>
   </div>
-
   <div class="section">
     <div class="sec-title"><div class="sec-dot" style="background:var(--mint)"></div>Sugestões para agora</div>
     <div class="sug-list" id="sugList"></div>
   </div>
-
 </div>
-
-<!-- ════════ FILA ════════ -->
 
 <div class="page" id="page-fila">
   <div class="section">
@@ -469,8 +364,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
   </div>
 </div>
 
-<!-- ════════ HISTÓRICO ════════ -->
-
 <div class="page" id="page-historico">
   <div class="section">
     <div class="sec-title"><div class="sec-dot" style="background:var(--blue)"></div>Resumo de Hoje</div>
@@ -482,8 +375,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <div id="historyBox"></div>
   </div>
 </div>
-
-<!-- ════════ CONFIG ════════ -->
 
 <div class="page" id="page-config">
   <div class="section">
@@ -500,8 +391,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <button class="btn btn-pink btn-full" onclick="saveKey()">Conectar Runway</button>
     </div>
   </div>
-
-  <!-- ELENCO DA FAMÍLIA -->
   <div class="section">
     <div class="sec-title" style="justify-content:space-between">
       <span style="display:flex;align-items:center;gap:6px"><div class="sec-dot" style="background:var(--purple)"></div>Elenco da Família</span>
@@ -510,14 +399,11 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <div style="font-size:11px;color:var(--text2);margin-bottom:12px;font-weight:600">Use @apelido nas cenas para incluir o personagem no vídeo</div>
     <div id="castList"></div>
   </div>
-
   <div class="section">
     <div class="sec-title"><div class="sec-dot" style="background:var(--mint)"></div>Dados</div>
     <button class="btn btn-danger btn-sm" onclick="clearGrade()">🗑 Limpar grade do dia</button>
     <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%" onclick="exportData()">↓ Exportar histórico</button>
   </div>
-</div>
-
 </div>
 
 </div><!-- end scroll -->
@@ -528,8 +414,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <div class="modal-handle"></div>
     <div class="modal-body">
       <div class="modal-title">👤 Novo Personagem</div>
-
-      <!-- PAPEL -->
       <div style="margin-bottom:10px">
         <label style="font-size:11px;font-weight:800;color:var(--text2);font-family:'Fredoka',sans-serif;letter-spacing:0.05em;display:block;margin-bottom:6px">PAPEL NA FAMÍLIA</label>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px" id="roleGrid">
@@ -547,8 +431,6 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
           <div class="role-chip" onclick="selectRole(this,'outro')" data-role="outro">➕ Outro</div>
         </div>
       </div>
-
-      <!-- NOME E APELIDO -->
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <div style="flex:1">
           <label style="font-size:11px;font-weight:800;color:var(--text2);font-family:'Fredoka',sans-serif;display:block;margin-bottom:4px">NOME</label>
@@ -559,16 +441,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
           <input type="text" id="castAlias" placeholder="Ex: minifran" style="width:100%" />
         </div>
       </div>
-
-      <!-- MÚLTIPLAS FOTOS -->
       <div style="margin-bottom:14px">
         <label style="font-size:11px;font-weight:800;color:var(--text2);font-family:'Fredoka',sans-serif;display:block;margin-bottom:6px">FOTOS DE REFERÊNCIA</label>
-        <div style="font-size:10px;color:var(--text2);margin-bottom:8px;font-weight:600">Adicione várias fotos para maior precisão — rosto, corpo, frente, costas...</div>
-
-        <!-- Fotos adicionadas -->
+        <div style="font-size:10px;color:var(--text2);margin-bottom:8px;font-weight:600">Adicione várias fotos para maior precisão</div>
         <div id="castPhotosGrid" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
-
-        <!-- Adicionar foto -->
         <div style="display:flex;gap:8px;align-items:flex-end">
           <div style="flex:1">
             <select id="castPhotoLabel" style="width:100%;margin-bottom:6px">
@@ -582,14 +458,11 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
               <option value="Roupa casual">👕 Roupa casual</option>
               <option value="Livre">📷 Livre</option>
             </select>
-            <label for="castPhoto" class="btn btn-outline btn-sm" style="display:block;text-align:center;cursor:pointer">
-              + Adicionar foto
-            </label>
+            <label for="castPhoto" class="btn btn-outline btn-sm" style="display:block;text-align:center;cursor:pointer">+ Adicionar foto</label>
             <input type="file" id="castPhoto" accept="image/*" style="display:none" onchange="addCastPhoto(this)" />
           </div>
         </div>
       </div>
-
       <div class="modal-actions">
         <button class="btn btn-pink" style="flex:1" onclick="saveCastMember()">💾 Salvar</button>
         <button class="btn btn-ghost" onclick="closeCastModal()">Cancelar</button>
@@ -597,6 +470,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     </div>
   </div>
 </div>
+
 <!-- MODAL SUGESTÃO PERSONALIZADA -->
 <div class="overlay" id="customSugModal">
   <div class="modal">
@@ -609,7 +483,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       </div>
       <div style="margin-bottom:14px">
         <label style="font-size:11px;font-weight:800;color:var(--text2);font-family:'Fredoka',sans-serif;display:block;margin-bottom:4px">DESCRIÇÃO DA CENA</label>
-        <textarea id="sugText" placeholder="Ex: Sentada na varanda com café assistindo o pôr do sol, brisa suave, expressão contemplativa e serena..." style="min-height:90px;width:100%"></textarea>
+        <textarea id="sugText" placeholder="Ex: Sentada na varanda com café..." style="min-height:90px;width:100%"></textarea>
       </div>
       <div class="modal-actions">
         <button class="btn btn-yellow" style="flex:1" onclick="saveCustomSug()">💾 Salvar</button>
@@ -641,10 +515,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.8';
+const VER = 'Live Life v5.9.1';
 
-// --- STATE---
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
+const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
 
 const S = {
   key: localStorage.getItem('rw_key') || RUNWAY_KEY,
@@ -652,7 +526,7 @@ const S = {
   slots: JSON.parse(localStorage.getItem('rw_slots') || '[]'),
   cast: JSON.parse(localStorage.getItem('rw_cast') || '[]'),
   customSugs: JSON.parse(localStorage.getItem('rw_customSugs') || '[]'),
-  proxyUrl: localStorage.getItem('rw_proxy') || 'https://blue-base-9603.af-francieli.workers.dev',
+  proxyUrl: localStorage.getItem('rw_proxy') || PROXY_URL,
   charName: localStorage.getItem('rw_charName') || 'Mini Fran',
   charDesc: localStorage.getItem('rw_charDesc') || 'A young Brazilian woman in her early 40s, long highlighted blonde hair, bronzed skin, slim figure, elegant natural lifestyle style',
   gradeActive: false,
@@ -663,39 +537,17 @@ const S = {
 
 const THUMBS = ['thumb-pink','thumb-mint','thumb-yellow','thumb-blue','thumb-purple'];
 
-// --- INIT---
 function init() {
-  // Salva chave automaticamente se não estava salva
-  // Salva proxy automaticamente
-  if (!localStorage.getItem('rw_proxy')) {
-    localStorage.setItem('rw_proxy', 'https://blue-base-9603.af-francieli.workers.dev');
-  }
-  if (!localStorage.getItem('rw_key') && RUNWAY_KEY) {
-    localStorage.setItem('rw_key', RUNWAY_KEY);
-  }
-  if (S.key) {
-    const inp = document.getElementById('apiInput');
-    if (inp) inp.value = '••••••••••••••••';
-    setDot(true);
-  }
-  const cn = document.getElementById('charName');
-  if (cn) cn.value = S.charName;
-  const cd = document.getElementById('charDesc');
-  if (cd) cd.value = S.charDesc;
-  startClock();
-  updateMoment();
-  renderSuggestions();
-  renderTimeline();
-  renderGrid();
-  renderSummary();
-  renderCastList();
-  renderCustomSugs();
+  if (!localStorage.getItem('rw_proxy')) localStorage.setItem('rw_proxy', PROXY_URL);
+  if (!localStorage.getItem('rw_key') && RUNWAY_KEY) localStorage.setItem('rw_key', RUNWAY_KEY);
+  if (S.key) { const inp = document.getElementById('apiInput'); if (inp) inp.value = '••••••••••••••••'; setDot(true); }
+  startClock(); updateMoment(); renderSuggestions(); renderTimeline(); renderGrid();
+  renderSummary(); renderCastList(); renderCustomSugs();
   setInterval(updateMoment, 60000);
   setInterval(renderSuggestions, 60000);
   setInterval(checkGrade, 30000);
 }
 
-// --- CLOCK---
 function startClock() {
   const tick = () => {
     const n = new Date();
@@ -704,13 +556,11 @@ function startClock() {
     const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
     const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
     document.getElementById('liveClock').textContent = `${h}:${m}`;
-    document.getElementById('gradeDate').textContent =
-      `${days[n.getDay()]}, ${n.getDate()} de ${months[n.getMonth()]}`;
+    document.getElementById('gradeDate').textContent = `${days[n.getDay()]}, ${n.getDate()} de ${months[n.getMonth()]}`;
   };
   tick(); setInterval(tick, 1000);
 }
 
-// --- PERIOD---
 function getPeriod(h) {
   if (h>=5&&h<9) return 'amanhecer';
   if (h>=9&&h<12) return 'manhã';
@@ -772,52 +622,32 @@ function updateMoment() {
   const p = getPeriod(h);
   const d = PERIODS[p];
   ['','2'].forEach(s => {
-    const mc = document.getElementById('momentCard'+s);
-    if (mc) mc.style.background = d.gradient;
-    const mp = document.getElementById('mcPeriod'+s);
-    if (mp) mp.textContent = d.emoji+' '+d.label;
-    const mt = document.getElementById('mcTitle'+s);
-    if (mt) mt.textContent = d.title;
-    const ms = document.getElementById('mcSub'+s);
-    if (ms) ms.textContent = d.sub;
+    const mc = document.getElementById('momentCard'+s); if (mc) mc.style.background = d.gradient;
+    const mp = document.getElementById('mcPeriod'+s); if (mp) mp.textContent = d.emoji+' '+d.label;
+    const mt = document.getElementById('mcTitle'+s); if (mt) mt.textContent = d.title;
+    const ms = document.getElementById('mcSub'+s); if (ms) ms.textContent = d.sub;
   });
 }
 
 function renderSuggestions() {
   const h = new Date().getHours();
   const sugs = PERIODS[getPeriod(h)].sugs;
-  const el = document.getElementById('sugList');
-  if (!el) return;
-  el.innerHTML = sugs.map(s=>`
-    <div class="sug-chip" onclick="useSug('${s.t.replace(/'/g,"\\'")}')">
-      <span class="sug-ic">${s.ic}</span>
-      <span class="sug-txt">${s.t}</span>
-      <span class="sug-use">usar</span>
-    </div>`).join('');
+  const el = document.getElementById('sugList'); if (!el) return;
+  el.innerHTML = sugs.map(s=>`<div class="sug-chip" onclick="useSug('${s.t.replace(/'/g,"\\'")}')"><span class="sug-ic">${s.ic}</span><span class="sug-txt">${s.t}</span><span class="sug-use">usar</span></div>`).join('');
 }
 
 function updateCharCount(el) {
   const len = el.value.length;
-  const el2 = document.getElementById('charCount');
-  if (!el2) return;
-  if (len > 400) {
-    el2.textContent = `⚠ ${len}/500 chars - será truncado pelo Runway`;
-    el2.style.color = 'var(--coral)';
-  } else {
-    el2.textContent = `${len}/500`;
-    el2.style.color = 'var(--text2)';
-  }
+  const el2 = document.getElementById('charCount'); if (!el2) return;
+  if (len > 400) { el2.textContent = `⚠ ${len}/500 chars - será truncado pelo Runway`; el2.style.color = 'var(--coral)'; }
+  else { el2.textContent = `${len}/500`; el2.style.color = 'var(--text2)'; }
 }
 
 function showMentionHints(el) {
-  const cast = S.cast || [];
-  if (!cast.length) return;
+  const cast = S.cast || []; if (!cast.length) return;
   const hintsEl = document.getElementById('mentionHints');
   hintsEl.style.display = 'flex';
-  hintsEl.innerHTML = cast.map(m => `
-    <span onclick="insertMention('@${m.alias}')" style="background:var(--purple-light);border:1.5px solid var(--purple);color:var(--purple);padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Fredoka',sans-serif">
-      ${m.roleEmoji} @${m.alias}
-    </span>`).join('');
+  hintsEl.innerHTML = cast.map(m => `<span onclick="insertMention('@${m.alias}')" style="background:var(--purple-light);border:1.5px solid var(--purple);color:var(--purple);padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Fredoka',sans-serif">${m.roleEmoji} @${m.alias}</span>`).join('');
 }
 
 function insertMention(mention) {
@@ -831,17 +661,15 @@ function useSug(txt) {
   document.getElementById('convBox').style.display = 'none';
   S.convertedPrompt = '';
   navTo('cena');
-  toast('Sugestão carregada! ');
+  toast('Sugestão carregada!');
 }
 
-// --- GRADE DO DIA---
 function toggleAddForm() {
   const f = document.getElementById('addSlotForm');
   f.classList.toggle('open');
   if (f.classList.contains('open')) {
     const now = new Date();
-    document.getElementById('slotTime').value =
-      String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('slotTime').value = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
     document.getElementById('slotLabel').focus();
   }
 }
@@ -851,26 +679,15 @@ function addSlot() {
   const label = document.getElementById('slotLabel').value.trim();
   const desc = document.getElementById('slotDesc').value.trim();
   const char = document.getElementById('slotChar').value;
-
   if (!time || !label) { toast('Preencha o horário e o nome!', 'err'); return; }
-
-  const slot = {
-    id: 'slot_'+Date.now(),
-    time, label, desc: desc||label, char,
-    status: 'upcoming', // upcoming | active | done | generating
-    sceneId: null,
-    triggered: false,
-  };
-
+  const slot = { id:'slot_'+Date.now(), time, label, desc:desc||label, char, status:'upcoming', sceneId:null, triggered:false };
   S.slots.push(slot);
   S.slots.sort((a,b) => a.time.localeCompare(b.time));
   saveSlots();
-
   document.getElementById('slotTime').value = '';
   document.getElementById('slotLabel').value = '';
   document.getElementById('slotDesc').value = '';
   document.getElementById('addSlotForm').classList.remove('open');
-
   renderTimeline();
   toast('✦ Horário adicionado à grade!', 'ok');
 }
@@ -882,42 +699,30 @@ function renderTimeline() {
     document.getElementById('gradeActions').style.display = 'none';
     return;
   }
-
   document.getElementById('gradeActions').style.display = 'flex';
-
   const nowStr = getCurrentTimeStr();
-
   el.innerHTML = S.slots.map(slot => {
     const isPast = slot.time < nowStr;
     const isNow = isSlotNow(slot);
     const dotColor = slot.status==='done' ? 'var(--mint)' : isNow ? 'var(--pink)' : 'var(--purple-light)';
-
     let cardClass = 'slot-card';
     if (isNow) cardClass += ' active-now';
     else if (slot.status==='done') cardClass += ' done-slot';
     else if (!isPast) cardClass += ' upcoming';
-
     let badge = '';
     if (isNow && slot.status!=='done') badge = `<span class="slot-badge sb-now">🔴 AGORA</span>`;
-    else if (slot.status==='done') badge = `<span class="slot-badge sb-done">OK pronto</span>`;
-    else if (slot.status==='generating') badge = `<span class="slot-badge sb-generating"> gerando</span>`;
+    else if (slot.status==='done') badge = `<span class="slot-badge sb-done">✅ pronto</span>`;
+    else if (slot.status==='generating') badge = `<span class="slot-badge sb-generating">⏳ gerando</span>`;
     else if (!isPast) badge = `<span class="slot-badge sb-upcoming">⏰ ${slot.time}</span>`;
     else badge = `<span class="slot-badge sb-done" style="opacity:0.5">passou</span>`;
-
     return `<div class="slot-item">
-      <div class="slot-time-col">
-        <div class="slot-time-text">${slot.time}</div>
-        <div class="slot-dot-outer" style="background:${dotColor}"></div>
-      </div>
+      <div class="slot-time-col"><div class="slot-time-text">${slot.time}</div><div class="slot-dot-outer" style="background:${dotColor}"></div></div>
       <div class="${cardClass}" onclick="openSlotModal('${slot.id}')">
-        <div class="slot-top">
-          <div class="slot-label">${slot.label}</div>
-          ${badge}
-        </div>
+        <div class="slot-top"><div class="slot-label">${slot.label}</div>${badge}</div>
         ${slot.desc && slot.desc !== slot.label ? `<div class="slot-desc">${slot.desc.substring(0,80)}${slot.desc.length>80?'…':''}</div>` : ''}
         <div class="slot-actions">
-          <button class="btn btn-pink btn-xs" onclick="event.stopPropagation();triggerSlotNow('${slot.id}')">> Gerar agora</button>
-          <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();deleteSlot('${slot.id}')"></button>
+          <button class="btn btn-pink btn-xs" onclick="event.stopPropagation();triggerSlotNow('${slot.id}')">▶ Gerar agora</button>
+          <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();deleteSlot('${slot.id}')">🗑</button>
         </div>
       </div>
     </div>`;
@@ -931,52 +736,37 @@ function getCurrentTimeStr() {
 
 function isSlotNow(slot) {
   const nowStr = getCurrentTimeStr();
-  const slotMins = timeToMins(slot.time);
-  const nowMins = timeToMins(nowStr);
-  return Math.abs(slotMins - nowMins) <= 5; // janela de 5 min
+  return Math.abs(timeToMins(slot.time) - timeToMins(nowStr)) <= 5;
 }
 
-function timeToMins(t) {
-  const [h,m] = t.split(':').map(Number);
-  return h*60+m;
-}
+function timeToMins(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
 
-// CHECA GRADE AUTOMATICAMENTE
 function checkGrade() {
   if (!S.key) return;
-  const nowStr = getCurrentTimeStr();
-  const nowMins = timeToMins(nowStr);
-
+  const nowMins = timeToMins(getCurrentTimeStr());
   S.slots.forEach(slot => {
     if (slot.triggered || slot.status==='done' || slot.status==='generating') return;
-    const slotMins = timeToMins(slot.time);
-    const diff = nowMins - slotMins;
-
-    if (diff >= 0 && diff <= 10) { // dentro de 10 min após o horário
-      slot.triggered = true;
-      slot.status = 'generating';
-      saveSlots();
-      renderTimeline();
-      toast(` ${slot.time} - gerando: ${slot.label}`);
+    const diff = nowMins - timeToMins(slot.time);
+    if (diff >= 0 && diff <= 10) {
+      slot.triggered = true; slot.status = 'generating';
+      saveSlots(); renderTimeline();
+      toast(`⏰ ${slot.time} - gerando: ${slot.label}`);
       triggerSlot(slot);
     }
   });
 }
 
 async function triggerSlotNow(slotId) {
-  const slot = S.slots.find(s=>s.id===slotId);
-  if (!slot) return;
-  slot.status = 'generating';
-  slot.triggered = true;
+  const slot = S.slots.find(s=>s.id===slotId); if (!slot) return;
+  slot.status = 'generating'; slot.triggered = true;
   saveSlots(); renderTimeline();
-  const msg = S.key ? `> Gerando vídeo: ${slot.label}` : `🎨 Criando prévia: ${slot.label}`;
-  toast(msg, 'ok');
+  toast(`▶ Gerando: ${slot.label}`, 'ok');
   await triggerSlot(slot);
 }
 
+// ✅ FIX: triggerSlot agora usa callRunway (proxy) em vez de /.netlify/functions/runway
 async function triggerSlot(slot) {
   const prompt = buildPrompt(slot.desc, slot.char);
-
   const scene = {
     id: 'sc_'+Date.now(),
     freeText: slot.label,
@@ -992,17 +782,12 @@ async function triggerSlot(slot) {
     thumbColor: THUMBS[Math.floor(Math.random()*THUMBS.length)],
     fromSlot: slot.id,
   };
-
   slot.sceneId = scene.id;
   S.scenes.unshift(scene);
-  save(); saveSlots();
-  renderGrid();
+  save(); saveSlots(); renderGrid();
 
-  // Se não tem API key, gera prévia local
   if (!S.key) {
     await sleep(1200);
-    scene.progress=60; save(); renderGrid();
-    await sleep(600);
     const preview = generateLocalPreview(slot.label+' '+slot.desc, slot.char, getPeriod(new Date().getHours()));
     scene.status='done'; scene.progress=100; scene.preview=preview; scene.isPreview=true;
     slot.status='done';
@@ -1011,23 +796,8 @@ async function triggerSlot(slot) {
     return;
   }
 
-  // Com API key: via Netlify Function
-  try {
-    const res = await fetch('/.netlify/functions/runway', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, ratio: '1280:720', duration: 5 } })
-    });
-    if (!res.ok) { const e=await res.json(); throw new Error(JSON.stringify(e)); }
-    const data = await res.json();
-    if(data.error){throw new Error(JSON.stringify(data));}
-    scene.taskId = data.id; save();
-    await pollScene(scene, slot);
-  } catch(e) {
-    scene.status='error'; slot.status='done';
-    save(); saveSlots(); renderGrid(); renderTimeline();
-    toast('Erro: '+e.message,'err');
-  }
+  // ✅ Usa generateScene que já tem toda a lógica correta com callRunway
+  await generateScene(scene, slot);
 }
 
 function buildPrompt(desc, char) {
@@ -1041,32 +811,19 @@ function buildPrompt(desc, char) {
   return `${charDescs[char]||charDescs.mini_fran}. ${desc}. ${lightMap[getPeriod(h)]}, cinematic lifestyle footage, warm tones, 4K quality.`;
 }
 
-// --- CENA MANUAL---
 async function convertPrompt() {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
-
   document.getElementById('convInd').style.display = 'flex';
   document.getElementById('convBox').style.display = 'none';
-
   const char = document.getElementById('charSel').value;
   const h = new Date().getHours();
   const lightMap = {'amanhecer':'soft warm morning light','manhã':'bright natural morning light','almoço':'midday light','tarde':'golden afternoon light','noite':'warm indoor lighting','noite alta':'dim bedroom lighting','madrugada':'dark night light'};
-
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model:'claude-sonnet-4-20250514', max_tokens:250,
-        messages:[{role:'user', content:`Convert this casual Brazilian Portuguese description into a 2-sentence cinematic Runway AI video prompt in English.
-
-Character: ${S.charDesc}
-Lighting: ${lightMap[getPeriod(h)]}
-Description: "${free}"
-
-Reply with ONLY the prompt text.`}]
-      })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:250,
+        messages:[{role:'user', content:`Convert this casual Brazilian Portuguese description into a 2-sentence cinematic Runway AI video prompt in English.\n\nCharacter: ${S.charDesc}\nLighting: ${lightMap[getPeriod(h)]}\nDescription: "${free}"\n\nReply with ONLY the prompt text.`}]})
     });
     const data = await res.json();
     const prompt = data.content[0].text.trim();
@@ -1081,19 +838,17 @@ Reply with ONLY the prompt text.`}]
   }
 }
 
-// --- FOTO DO LOCAL---
 let currentPhotoBase64 = null;
 
 function previewPhoto(input) {
-  const file = input.files[0];
-  if (!file) return;
+  const file = input.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
-    currentPhotoBase64 = e.target.result; // base64 completo com data:image/...
+    currentPhotoBase64 = e.target.result;
     document.getElementById('photoImg').src = currentPhotoBase64;
     document.getElementById('photoPreview').style.display = 'block';
     document.getElementById('noPhotoNote').style.display = 'none';
-    toast(' Foto carregada!', 'ok');
+    toast('📷 Foto carregada!', 'ok');
   };
   reader.readAsDataURL(file);
 }
@@ -1103,42 +858,30 @@ function clearPhoto() {
   document.getElementById('photoUpload').value = '';
   document.getElementById('photoPreview').style.display = 'none';
   document.getElementById('noPhotoNote').style.display = 'block';
-  toast('Foto removida - sistema vai gerar automaticamente');
+  toast('Foto removida');
 }
 
 function addSceneManual(e) {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
-
-  // Previne duplo clique
   const btn = e ? e.target : null;
   if (btn) { btn.disabled = true; setTimeout(() => btn.disabled = false, 2000); }
-
   const char = document.getElementById('charSel').value;
   const airTime = document.getElementById('airTimeInput') ? document.getElementById('airTimeInput').value : '';
   const now = new Date();
-
   const basePrompt = S.convertedPrompt || buildPrompt(free, char);
   const { prompt, photos } = injectCastIntoPrompt(basePrompt, free);
-
   const scene = {
-    id:'sc_'+Date.now(),
-    freeText:free,
-    prompt,
-    castPhotos: photos,
-    char, period:getPeriod(now.getHours()),
-    status:'pending', videoUrl:null, taskId:null, progress:0,
-    photoBase64: currentPhotoBase64 || null,
-    airTime: airTime || null,
+    id:'sc_'+Date.now(), freeText:free, prompt, castPhotos:photos, char,
+    period:getPeriod(now.getHours()), status:'pending', videoUrl:null, taskId:null, progress:0,
+    photoBase64:currentPhotoBase64||null, airTime:airTime||null,
     createdAt:now.toISOString(),
     timeLabel:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
     dateLabel:now.toLocaleDateString('pt-BR'),
     weekLabel:getWeekLabel(now),
     thumbColor:THUMBS[Math.floor(Math.random()*THUMBS.length)],
   };
-
-  S.scenes.unshift(scene);
-  save();
+  S.scenes.unshift(scene); save();
   document.getElementById('freeInput').value='';
   document.getElementById('convBox').style.display='none';
   document.getElementById('mentionHints').style.display='none';
@@ -1147,26 +890,22 @@ function addSceneManual(e) {
   S.convertedPrompt='';
   clearPhoto();
   renderGrid(); renderSummary();
-  toast(' Cena adicionada à fila!', 'ok');
+  toast('✦ Cena adicionada à fila!', 'ok');
   navTo('fila');
 }
 
-// --- GENERATE---
 async function generateAll() {
   const pending = S.scenes.filter(s=>s.status==='pending');
   if (!pending.length) { toast('Nenhuma cena pendente!','err'); return; }
-  const msg = S.key ? `> Gerando ${pending.length} vídeo(s) no Runway...` : `🎨 Gerando ${pending.length} prévia(s)...`;
-  toast(msg);
-  for (const s of pending) { await generateScene(s); await sleep(800); }
+  toast(S.key ? `▶ Gerando ${pending.length} vídeo(s)...` : `🎨 Gerando ${pending.length} prévia(s)...`);
+  for (const s of pending) { await generateScene(s, null); await sleep(800); }
 }
 
 async function genSingle() {
   const scene = S.scenes.find(s=>s.id===S.activeModal); if(!scene)return;
   closeModal();
-  await generateScene(scene);
+  await generateScene(scene, null);
 }
-
-const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
 
 async function callRunway(path, method, body) {
   const proxyUrl = localStorage.getItem('rw_proxy') || PROXY_URL;
@@ -1184,12 +923,12 @@ async function callRunway(path, method, body) {
   }
 }
 
-async function generateScene(scene) {
+// ✅ FIX PRINCIPAL: truncatedPrompt declarado ANTES do if (!imageUrl)
+async function generateScene(scene, slot) {
   scene.status='generating'; scene.progress=5; scene.startedAt=Date.now(); scene.errorMsg='';
   save(); renderGrid();
   const timerInterval = setInterval(() => { if(scene.status==='generating') renderGrid(); else clearInterval(timerInterval); }, 1000);
 
-  // Sem API key - prévia local
   if (!S.key) {
     await sleep(1200);
     const preview = generateLocalPreview(scene.freeText, scene.char, scene.period);
@@ -1203,15 +942,14 @@ async function generateScene(scene) {
   try {
     let imageUrl = scene.photoBase64 || null;
 
-    // Se não tem foto, gera imagem primeiro
-    if (!imageUrl) {
-      toast('🖼 Gerando imagem base...');
-      scene.progress = 10; save(); renderGrid();
-
-    // Runway tem limite de ~500 chars no prompt
+    // ✅ truncatedPrompt declarado aqui, fora do if, disponível para todo o bloco
     const truncatedPrompt = scene.prompt.length > 500 ? scene.prompt.substring(0, 497) + '...' : scene.prompt;
 
-    const imgTask = await callRunway('/text_to_image', 'POST', {
+    if (!imageUrl) {
+      toast('⏳ Gerando imagem base...');
+      scene.progress = 10; save(); renderGrid();
+
+      const imgTask = await callRunway('/text_to_image', 'POST', {
         model: 'gen4_image',
         promptText: truncatedPrompt,
         ratio: '1280:720'
@@ -1219,7 +957,6 @@ async function generateScene(scene) {
 
       if (!imgTask.id) throw new Error('Falha ao criar task de imagem: ' + JSON.stringify(imgTask));
 
-      // Poll imagem (max 60s)
       const imgStart = Date.now();
       while (Date.now() - imgStart < 60000) {
         await sleep(4000);
@@ -1230,15 +967,14 @@ async function generateScene(scene) {
         if (poll.status === 'FAILED') throw new Error('Imagem falhou: ' + (poll.failure||'desconhecido'));
       }
       if (!imageUrl) throw new Error('Timeout na geração da imagem (60s)');
-      toast('OK Imagem gerada! Criando vídeo...');
+      toast('✅ Imagem gerada! Criando vídeo...');
     }
 
-    // Gera vídeo com a imagem
     scene.progress = 40; save(); renderGrid();
     const vidTask = await callRunway('/image_to_video', 'POST', {
       model: 'gen4_turbo',
       promptImage: imageUrl,
-      promptText: truncatedPrompt,
+      promptText: truncatedPrompt,  // ✅ agora disponível aqui
       ratio: '1280:720',
       duration: 5
     });
@@ -1246,7 +982,6 @@ async function generateScene(scene) {
     if (!vidTask.id) throw new Error('Falha ao criar task de vídeo: ' + JSON.stringify(vidTask));
     scene.taskId = vidTask.id; save();
 
-    // Poll vídeo (max 90s)
     const vidStart = Date.now();
     while (Date.now() - vidStart < 90000) {
       await sleep(5000);
@@ -1255,8 +990,9 @@ async function generateScene(scene) {
       const poll = await callRunway('/tasks/' + vidTask.id, 'GET', null);
       if (poll.status === 'SUCCEEDED') {
         scene.status='done'; scene.videoUrl=poll.output[0]; scene.progress=100;
+        if (slot) { slot.status='done'; saveSlots(); renderTimeline(); }
         save(); renderGrid(); renderSummary();
-        toast(' Vídeo pronto!','ok');
+        toast('🎬 Vídeo pronto!','ok');
         clearInterval(timerInterval);
         return;
       }
@@ -1266,18 +1002,15 @@ async function generateScene(scene) {
 
   } catch(e) {
     scene.status='error'; scene.errorMsg=e.message;
+    if (slot) { slot.status='done'; saveSlots(); renderTimeline(); }
     save(); renderGrid();
     toast('ERRO '+e.message,'err');
     clearInterval(timerInterval);
   }
 }
 
-// pollScene definida abaixo
-
 function generateLocalPreview(text, char, period) {
   const t = text.toLowerCase();
-
-  // Detecta ambiente e tema
   const themes = [
     { keys:['academia','treinar','exerc','muscula','correr'], emoji:'🏋', cor1:'#FF6B6B', cor2:'#FF8E53', amb:'Academia', luz:'Luz natural intensa', emoc:'Energia e determinação' },
     { keys:['dormir','cama','acordar','espreguiç'], emoji:'🛌', cor1:'#A18CD1', cor2:'#FBC2EB', amb:'Quarto aconchegante', luz:'Luz suave da manhã', emoc:'Calma e descanso' },
@@ -1292,7 +1025,6 @@ function generateLocalPreview(text, char, period) {
     { keys:['skincare','creme','pele','rosto','espelho'], emoji:'🧴', cor1:'#FCCB90', cor2:'#D57EEB', amb:'Banheiro iluminado', luz:'Luz branca de espelho', emoc:'Cuidado e autocuidado' },
     { keys:['maquiag','batom','cabelo'], emoji:'💄', cor1:'#FF9A9E', cor2:'#FAD0C4', amb:'Penteadeira', luz:'Luz quente e glamourosa', emoc:'Confiança e beleza' },
   ];
-
   const periodThemes = {
     'amanhecer':{ emoji:'🌅', cor1:'#FFBE76', cor2:'#FF7979', amb:'Quarto ao amanhecer', luz:'Primeira luz do dia', emoc:'Início e esperança' },
     'manhã':{ emoji:'☀', cor1:'#F9CA24', cor2:'#F0932B', amb:'Casa iluminada', luz:'Luz solar da manhã', emoc:'Disposição e energia' },
@@ -1302,126 +1034,56 @@ function generateLocalPreview(text, char, period) {
     'noite alta':{ emoji:'🌙', cor1:'#6C5CE7', cor2:'#A29BFE', amb:'Quarto à noite', luz:'Luz suave e íntima', emoc:'Sonolência e paz' },
     'madrugada':{ emoji:'🌌', cor1:'#2D3561', cor2:'#6C5CE7', amb:'Casa em silêncio', luz:'Escuridão com luz suave', emoc:'Repouso profundo' },
   };
-
-  // Tenta detectar tema pelo texto
   for (const th of themes) {
     if (th.keys.some(k => t.includes(k))) {
-      return { titulo:text.substring(0,40), descricao:`${char==='mini_fran'?'Mini Fran':'Personagem'} ${text}. A cena captura um momento autêntico do cotidiano com estética cinematográfica.`, ambiente:th.amb, iluminacao:th.luz, emocao:th.emoc, cor_dominante:th.cor1, cor_secundaria:th.cor2, emoji_cena:th.emoji };
+      return { titulo:text.substring(0,40), descricao:`Mini Fran ${text}. Momento autêntico do cotidiano com estética cinematográfica.`, ambiente:th.amb, iluminacao:th.luz, emocao:th.emoc, cor_dominante:th.cor1, cor_secundaria:th.cor2, emoji_cena:th.emoji };
     }
   }
-
-  // Fallback pelo período do dia
   const pt = periodThemes[period] || periodThemes['manhã'];
-  return { titulo:text.substring(0,40), descricao:`${char==='mini_fran'?'Mini Fran':'Personagem'} ${text}. Um momento do cotidiano capturado com estética cinematográfica e luz natural.`, ambiente:pt.amb, iluminacao:pt.luz, emocao:pt.emoc, cor_dominante:pt.cor1, cor_secundaria:pt.cor2, emoji_cena:pt.emoji };
+  return { titulo:text.substring(0,40), descricao:`Mini Fran ${text}. Momento do cotidiano com estética cinematográfica e luz natural.`, ambiente:pt.amb, iluminacao:pt.luz, emocao:pt.emoc, cor_dominante:pt.cor1, cor_secundaria:pt.cor2, emoji_cena:pt.emoji };
 }
 
-async function pollScene(scene, slot) {
-  const MAX_TIME = 90000; // 1.5 minutos
-  const start = Date.now();
-  let attempts = 0;
-
-  while (Date.now() - start < MAX_TIME) {
-    await sleep(5000);
-    attempts++;
-    try {
-      const res = await fetch('/.netlify/functions/runway', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: '/tasks/' + scene.taskId, method: 'GET', apiKey: S.key })
-      });
-      const data = await res.json();
-      const elapsed = Date.now() - start;
-      scene.progress = Math.min(90, (elapsed / MAX_TIME) * 100);
-      save(); renderGrid();
-
-      if (data.status === 'SUCCEEDED') {
-        scene.status = 'done'; scene.videoUrl = data.output[0]; scene.progress = 100;
-        if (slot) { slot.status = 'done'; saveSlots(); renderTimeline(); }
-        save(); renderGrid(); renderSummary();
-        toast(' Vídeo pronto!', 'ok');
-        return;
-      }
-      if (data.status === 'FAILED') {
-        const reason = data.failure || data.failureCode || 'Runway rejeitou a geração';
-        throw new Error(reason);
-      }
-    } catch(e) {
-      scene.status = 'error';
-      scene.errorMsg = e.message;
-      save(); renderGrid();
-      toast('ERRO Erro: ' + e.message, 'err');
-      return;
-    }
-  }
-
-  // Timeout de 1.5 min
-  scene.status = 'error';
-  scene.errorMsg = 'Timeout - Runway demorou mais de 1.5 min. Tente gerar novamente.';
-  save(); renderGrid();
-  toast('⏱ Timeout! Tente gerar novamente.', 'err');
-}
-
-// --- RENDER GRID---
 function renderGrid() {
   const grid=document.getElementById('grid');
   document.getElementById('qCount').textContent=S.scenes.length;
   if(!S.scenes.length){
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon"></div><div class="empty-text">Monte a grade do dia ou adicione cenas manualmente!</div></div>`;
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🎬</div><div class="empty-text">Monte a grade do dia ou adicione cenas manualmente!</div></div>`;
     return;
   }
-  const bm={pending:`<span class="badge b-pending"> aguardando</span>`,generating:`<span class="badge b-generating"> gerando</span>`,done:`<span class="badge b-done">OK pronto</span>`,reused:`<span class="badge b-reused"> reutilizado</span>`,error:`<span class="badge b-error">ERRO erro</span>`};
+  const bm={pending:`<span class="badge b-pending">⏳ aguardando</span>`,generating:`<span class="badge b-generating">🎬 gerando</span>`,done:`<span class="badge b-done">✅ pronto</span>`,reused:`<span class="badge b-reused">♻️ reutilizado</span>`,error:`<span class="badge b-error">❌ erro</span>`};
   grid.innerHTML=S.scenes.map(s=>{
     let thumb='';
-    if(s.status==='pending') {
+    if(s.status==='pending'){
       thumb = s.photoBase64
-        ? `<img src="${s.photoBase64}" style="width:100%;height:100%;object-fit:cover;opacity:0.7"/><div class="status-overlay" style="background:rgba(255,255,255,0.5)"><div style="font-size:20px"></div><div style="font-size:10px;font-weight:700;color:var(--text)">foto carregada</div></div>`
-        : `<div class="thumb-icon"></div>`;
-    }
-    else if(s.status==='generating') {
-      const elapsed = s.startedAt ? Math.floor((Date.now() - s.startedAt)/1000) : 0;
+        ? `<img src="${s.photoBase64}" style="width:100%;height:100%;object-fit:cover;opacity:0.7"/><div class="status-overlay" style="background:rgba(255,255,255,0.5)"><div style="font-size:20px">📷</div><div style="font-size:10px;font-weight:700;color:var(--text)">foto carregada</div></div>`
+        : `<div class="thumb-icon">🎬</div>`;
+    } else if(s.status==='generating'){
+      const elapsed = s.startedAt ? Math.floor((Date.now()-s.startedAt)/1000) : 0;
       const mins = Math.floor(elapsed/60); const secs = elapsed%60;
       const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
       const pct = Math.min(95, s.progress||5);
-      thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:16px;color:var(--purple);font-weight:800;margin-top:4px">${Math.round(pct)}%</div><div class="prog-bar" style="margin-top:4px;width:80%"><div class="prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--text2);margin-top:4px">⏱ ${timeStr} · ~2-3min total</div></div><div class="thumb-icon"></div>`;
-    }
-    else if(s.status==='done' && s.preview) {
-      thumb=`<div style="width:100%;height:100%;background:linear-gradient(135deg,${s.preview.cor_dominante||'#ffb6c1'},${s.preview.cor_secundaria||'#c8a2c8'});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px">
-        <div style="font-size:32px">${s.preview.emoji_cena||''}</div>
-        <div style="font-size:10px;color:white;font-weight:700;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.3);line-height:1.3">${s.preview.ambiente||''}</div>
-      </div>`;
-    }
-    else if(s.status==='done') {
-      thumb = s.videoUrl
-        ? `<video src="${s.videoUrl}" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover"></video>`
-        : `<div class="thumb-icon">OK</div>`;
-    }
-    else if(s.status==='reused') thumb=`<div class="thumb-icon"></div>`;
-    else if(s.status==='error') thumb=`<div style="background:var(--coral-light);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px"><div style="font-size:24px">ERRO</div><div style="font-size:10px;color:var(--coral);font-weight:700;text-align:center;line-height:1.4">${s.errorMsg||'Erro na geração'}</div></div>`;
+      thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:16px;color:var(--purple);font-weight:800;margin-top:4px">${Math.round(pct)}%</div><div class="prog-bar" style="margin-top:4px;width:80%"><div class="prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--text2);margin-top:4px">⏱ ${timeStr} · ~2-3min total</div></div><div class="thumb-icon">🎬</div>`;
+    } else if(s.status==='done' && s.preview){
+      thumb=`<div style="width:100%;height:100%;background:linear-gradient(135deg,${s.preview.cor_dominante||'#ffb6c1'},${s.preview.cor_secundaria||'#c8a2c8'});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px"><div style="font-size:32px">${s.preview.emoji_cena||'🎬'}</div><div style="font-size:10px;color:white;font-weight:700;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.3);line-height:1.3">${s.preview.ambiente||''}</div></div>`;
+    } else if(s.status==='done'){
+      thumb = s.videoUrl ? `<video src="${s.videoUrl}" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover"></video>` : `<div class="thumb-icon">✅</div>`;
+    } else if(s.status==='reused') thumb=`<div class="thumb-icon">♻️</div>`;
+    else if(s.status==='error') thumb=`<div style="background:var(--coral-light);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px"><div style="font-size:24px">❌</div><div style="font-size:10px;color:var(--coral);font-weight:700;text-align:center;line-height:1.4">${s.errorMsg||'Erro na geração'}</div></div>`;
+
     const short=s.freeText.length>42?s.freeText.substring(0,42)+'…':s.freeText;
-    const airBadge = s.airTime ? `<span style="font-size:10px;background:var(--mint-light);color:#009970;border:1.5px solid var(--mint);padding:2px 7px;border-radius:8px;font-weight:700;font-family:'Fredoka',sans-serif"> ${s.airTime}</span>` : '';
+    const airBadge = s.airTime ? `<span style="font-size:10px;background:var(--mint-light);color:#009970;border:1.5px solid var(--mint);padding:2px 7px;border-radius:8px;font-weight:700;font-family:'Fredoka',sans-serif">🔴 ${s.airTime}</span>` : '';
     const actionBtns = s.status==='error'
-      ? `<div style="display:flex;gap:6px;margin-top:6px">
-          <button onclick="event.stopPropagation();retryScene('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:6px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer"> Tentar novamente</button>
-          <button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--coral-light);color:var(--coral);border:2px solid var(--coral);padding:6px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer"></button>
-        </div>`
+      ? `<div style="display:flex;gap:6px;margin-top:6px"><button onclick="event.stopPropagation();retryScene('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:6px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">▶ Tentar novamente</button><button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--coral-light);color:var(--coral);border:2px solid var(--coral);padding:6px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">🗑</button></div>`
       : s.status==='done'
-      ? `<div style="display:flex;gap:6px;margin-top:6px">
-          <button onclick="event.stopPropagation();reuseSceneDirect('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer"> Reutilizar</button>
-          <button onclick="event.stopPropagation();openModal('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--pink),var(--purple));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">> Ver</button>
-          <button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:5px 8px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer"></button>
-        </div>`
+      ? `<div style="display:flex;gap:6px;margin-top:6px"><button onclick="event.stopPropagation();reuseSceneDirect('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">♻️ Reutilizar</button><button onclick="event.stopPropagation();openModal('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--pink),var(--purple));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">▶ Ver</button><button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:5px 8px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">🗑</button></div>`
       : s.status==='pending'
-      ? `<div style="margin-top:6px"><button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:4px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer"> Remover</button></div>`
+      ? `<div style="margin-top:6px"><button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:4px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">🗑 Remover</button></div>`
       : '';
     return `<div class="scene-card" onclick="openModal('${s.id}')">
       <div class="scene-thumb ${s.thumbColor||'thumb-pink'}">${thumb}</div>
       <div class="scene-info">
         <div class="scene-title">${short}</div>
-        <div class="scene-bottom" style="flex-wrap:wrap;gap:4px">
-          <span class="scene-time-label">${s.timeLabel} · ${s.dateLabel}</span>
-          ${airBadge}
-          ${bm[s.status]||''}
-        </div>
+        <div class="scene-bottom" style="flex-wrap:wrap;gap:4px"><span class="scene-time-label">${s.timeLabel} · ${s.dateLabel}</span>${airBadge}${bm[s.status]||''}</div>
         ${actionBtns}
       </div>
     </div>`;
@@ -1430,58 +1092,30 @@ function renderGrid() {
 
 function clearAll() {
   if (!S.scenes.length) { toast('Fila já está vazia!'); return; }
-  S.scenes = [];
-  save(); renderGrid(); renderSummary();
+  S.scenes = []; save(); renderGrid(); renderSummary();
   toast('Fila limpa!');
 }
 
-function clearDone(){
-  S.scenes = S.scenes.filter(s=>s.status!=='pending');
-  save(); renderGrid(); renderSummary();
-  toast('Pendentes removidos!');
-}
-
 function reuseSceneDirect(id) {
-  const orig = S.scenes.find(x=>x.id===id);
-  if (!orig) return;
+  const orig = S.scenes.find(x=>x.id===id); if (!orig) return;
   const now = new Date();
-  const copy = {
-    ...orig,
-    id: 'sc_'+Date.now(),
-    status: 'reused',
-    videoUrl: orig.videoUrl,
-    isReuse: true,
-    reuseFrom: id,
-    timeLabel: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-    dateLabel: now.toLocaleDateString('pt-BR'),
-    weekLabel: getWeekLabel(now),
-    airTime: null,
-    progress: 100,
-  };
-  S.scenes.unshift(copy);
-  save(); renderGrid(); renderSummary();
-  toast(' Cena reutilizada na fila - sem gastar crédito!', 'ok');
+  const copy = { ...orig, id:'sc_'+Date.now(), status:'reused', isReuse:true, reuseFrom:id,
+    timeLabel:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    dateLabel:now.toLocaleDateString('pt-BR'), weekLabel:getWeekLabel(now), airTime:null, progress:100 };
+  S.scenes.unshift(copy); save(); renderGrid(); renderSummary();
+  toast('♻️ Cena reutilizada - sem gastar crédito!', 'ok');
 }
 
-function deleteScene(id) {
-  S.scenes = S.scenes.filter(x => x.id !== id);
-  save(); renderGrid(); renderSummary();
-  toast('Cena removida!');
-}
+function deleteScene(id) { S.scenes = S.scenes.filter(x=>x.id!==id); save(); renderGrid(); renderSummary(); toast('Cena removida!'); }
 
 async function retryScene(id) {
-  const scene = S.scenes.find(x => x.id === id);
-  if (!scene) return;
-  scene.status = 'pending';
-  scene.errorMsg = '';
-  scene.progress = 0;
-  scene.taskId = null;
+  const scene = S.scenes.find(x=>x.id===id); if (!scene) return;
+  scene.status='pending'; scene.errorMsg=''; scene.progress=0; scene.taskId=null;
   save(); renderGrid();
-  toast(' Tentando novamente...');
-  await generateScene(scene);
+  toast('▶ Tentando novamente...');
+  await generateScene(scene, null);
 }
 
-// --- SUMMARY---
 function renderSummary() {
   const el=document.getElementById('summaryBox');
   const today=new Date().toLocaleDateString('pt-BR');
@@ -1490,75 +1124,39 @@ function renderSummary() {
   const pending=ts.filter(s=>s.status==='pending');
   const h=new Date().getHours();
   if(!ts.length){el.innerHTML=`<div class="empty-state" style="padding:20px 0"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma cena hoje ainda</div></div>`;return;}
-  el.innerHTML=`
-    <div class="sum-card pink">
-      <div class="sum-title">${PERIODS[getPeriod(h)].emoji} Hoje · ${today}</div>
-      <ul class="sum-list">
-        <li>${ts.length} cenas planejadas</li>
-        <li>${done.length} prontas</li>
-        ${pending.length?`<li>${pending.length} aguardando</li>`:''}
-        <li>${S.slots.filter(s=>s.status==='done').length} horários da grade concluídos</li>
-      </ul>
-    </div>
-    ${done.length?`<div class="sum-card mint"><div class="sum-title">OK Concluídas</div><ul class="sum-list">${done.map(s=>`<li>${s.timeLabel} - ${s.freeText.substring(0,38)}${s.freeText.length>38?'…':''}</li>`).join('')}</ul></div>`:''}`;
+  el.innerHTML=`<div class="sum-card pink"><div class="sum-title">${PERIODS[getPeriod(h)].emoji} Hoje · ${today}</div><ul class="sum-list"><li>${ts.length} cenas planejadas</li><li>${done.length} prontas</li>${pending.length?`<li>${pending.length} aguardando</li>`:''}<li>${S.slots.filter(s=>s.status==='done').length} horários da grade concluídos</li></ul></div>${done.length?`<div class="sum-card mint"><div class="sum-title">✅ Concluídas</div><ul class="sum-list">${done.map(s=>`<li>${s.timeLabel} - ${s.freeText.substring(0,38)}${s.freeText.length>38?'…':''}</li>`).join('')}</ul></div>`:''}`;
 }
 
-// --- HISTORY---
 function renderHistory() {
   const q=document.getElementById('histSearch').value.toLowerCase();
   const el=document.getElementById('historyBox');
   if(!S.scenes.length){el.innerHTML=`<div class="empty-state" style="padding:20px 0"><div class="empty-icon">📅</div><div class="empty-text">Histórico aparecerá aqui</div></div>`;return;}
   const weeks={};
   S.scenes.forEach(s=>{if(!weeks[s.weekLabel])weeks[s.weekLabel]=[];weeks[s.weekLabel].push(s);});
-  el.innerHTML=Object.entries(weeks).map(([week,scenes])=>`
-    <div class="week-group">
-      <div class="week-label">${week}</div>
-      ${scenes.map(s=>{
-        const hl=q&&(s.freeText.toLowerCase().includes(q)||s.prompt.toLowerCase().includes(q));
-        return `<div class="hist-entry" style="${hl?'background:var(--pink-light);border-radius:10px;padding:8px':''}">
-          <span class="he-time">${s.timeLabel}<br>${s.dateLabel}</span>
-          <div class="he-body">
-            <div class="he-text" style="${hl?'color:var(--pink)':''}">${s.freeText}</div>
-            <div class="he-tags"><span class="he-tag ${hl?'hl':''}">${s.period}</span><span class="he-tag">${s.char}</span><span class="he-tag">${s.status}</span></div>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>`).join('');
+  el.innerHTML=Object.entries(weeks).map(([week,scenes])=>`<div class="week-group"><div class="week-label">${week}</div>${scenes.map(s=>{const hl=q&&(s.freeText.toLowerCase().includes(q)||s.prompt.toLowerCase().includes(q));return `<div class="hist-entry" style="${hl?'background:var(--pink-light);border-radius:10px;padding:8px':''}"><span class="he-time">${s.timeLabel}<br>${s.dateLabel}</span><div class="he-body"><div class="he-text" style="${hl?'color:var(--pink)':''}">${s.freeText}</div><div class="he-tags"><span class="he-tag ${hl?'hl':''}">${s.period}</span><span class="he-tag">${s.char}</span><span class="he-tag">${s.status}</span></div></div></div>`;}).join('')}</div>`).join('');
 }
 
-// --- SLOT MODAL (inline)---
 function openSlotModal(slotId) {
-  const slot = S.slots.find(s=>s.id===slotId);
-  if (!slot) return;
-  // Reutiliza o modal existente como visualizador de slot
+  const slot = S.slots.find(s=>s.id===slotId); if (!slot) return;
   S.activeModal = null;
   document.getElementById('modalTitle').textContent = `${slot.time} - ${slot.label}`;
   document.getElementById('modalMeta').textContent = `Personagem: ${slot.char} · Status: ${slot.status}`;
   document.getElementById('modalPrompt').textContent = slot.desc;
-
-  // Checar se tem cena gerada
   const scene = slot.sceneId ? S.scenes.find(s=>s.id===slot.sceneId) : null;
   const vid = document.getElementById('modalVid');
-  vid.innerHTML = (scene && scene.videoUrl) ? `<video src="${scene.videoUrl}" controls autoplay loop style="width:100%;height:100%;object-fit:cover"></video>` : '';
-
+  vid.innerHTML = (scene && scene.videoUrl) ? `<video src="${scene.videoUrl}" controls autoplay loop style="width:100%;height:100%;object-fit:cover"></video>` : '🎬';
   document.getElementById('modal').classList.add('open');
 }
 
-// --- MODAL---
 function openModal(id) {
-  const s=S.scenes.find(x=>x.id===id);if(!s)return;
+  const s=S.scenes.find(x=>x.id===id); if(!s)return;
   S.activeModal=id;
   document.getElementById('modalTitle').textContent=s.freeText;
-  const airInfo = s.airTime ? ` ·  ${s.airTime}` : '';
+  const airInfo = s.airTime ? ` · 🔴 ${s.airTime}` : '';
   document.getElementById('modalMeta').textContent=`${s.timeLabel} · ${s.dateLabel} · ${s.char}${airInfo}`;
-  // Prompt apenas em inglês para o Runway
-  document.getElementById('modalPrompt').textContent = s.prompt.replace(/[^\x00-\x7F\s.,!?'"()\-:;@#]/g, '') || s.prompt;
+  document.getElementById('modalPrompt').textContent=s.prompt||'';
   const vid=document.getElementById('modalVid');
-  if(s.videoUrl) {
-    vid.innerHTML=`<video src="${s.videoUrl}" controls autoplay loop playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
-  } else {
-    vid.innerHTML='';
-  }
+  vid.innerHTML = s.videoUrl ? `<video src="${s.videoUrl}" controls autoplay loop playsinline style="width:100%;height:100%;object-fit:cover"></video>` : '🎬';
   document.getElementById('modal').classList.add('open');
 }
 function closeModal(){document.getElementById('modal').classList.remove('open');S.activeModal=null;}
@@ -1566,14 +1164,12 @@ function reuseModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s)retur
 function dlModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s||!s.videoUrl){toast('Vídeo não gerado ainda','err');return;}const a=document.createElement('a');a.href=s.videoUrl;a.download=`cena_${s.timeLabel.replace(':','-')}.mp4`;a.click();}
 function delModal(){S.scenes=S.scenes.filter(x=>x.id!==S.activeModal);save();closeModal();renderGrid();renderSummary();toast('Cena excluída!');}
 
-// --- ELENCO---
-let castPhotos = []; // array de {label, base64}
+let castPhotos = [];
 let selectedRole = 'eu';
 
-// --- SUGESTÕES PERSONALIZADAS---
 function openCustomSugModal() {
-  document.getElementById('sugEmoji').value = '';
-  document.getElementById('sugText').value = '';
+  document.getElementById('sugEmoji').value='';
+  document.getElementById('sugText').value='';
   document.getElementById('customSugModal').classList.add('open');
 }
 
@@ -1581,205 +1177,127 @@ function saveCustomSug() {
   const emoji = document.getElementById('sugEmoji').value.trim() || '⭐';
   const text = document.getElementById('sugText').value.trim();
   if (!text) { toast('Escreva a descrição da cena!', 'err'); return; }
-
   S.customSugs = S.customSugs || [];
-  S.customSugs.push({ id: 'sug_' + Date.now(), emoji, text });
+  S.customSugs.push({ id:'sug_'+Date.now(), emoji, text });
   localStorage.setItem('rw_customSugs', JSON.stringify(S.customSugs));
   document.getElementById('customSugModal').classList.remove('open');
   renderCustomSugs();
-  toast(' Sugestão salva!', 'ok');
+  toast('✦ Sugestão salva!', 'ok');
 }
 
 function deleteCustomSug(id) {
-  S.customSugs = (S.customSugs || []).filter(s => s.id !== id);
+  S.customSugs = (S.customSugs||[]).filter(s=>s.id!==id);
   localStorage.setItem('rw_customSugs', JSON.stringify(S.customSugs));
   renderCustomSugs();
   toast('Sugestão removida!');
 }
 
 function renderCustomSugs() {
-  const el = document.getElementById('customSugList');
-  if (!el) return;
-  const sugs = S.customSugs || [];
-  if (!sugs.length) {
-    el.innerHTML = `<div style="font-size:11px;color:var(--text2);font-weight:600;text-align:center;padding:8px">Nenhuma sugestão personalizada ainda</div>`;
-    return;
-  }
-  el.innerHTML = sugs.map(s => `
-    <div class="sug-chip" style="position:relative">
-      <span class="sug-ic">${s.emoji}</span>
-      <span class="sug-txt" onclick="useSug('${s.text.replace(/'/g,"\\'")}')">${s.text.substring(0,60)}${s.text.length>60?'…':''}</span>
-      <span class="sug-use" onclick="useSug('${s.text.replace(/'/g,"\\'")}')">usar</span>
-      <button onclick="deleteCustomSug('${s.id}')" style="position:absolute;top:-6px;right:-6px;background:var(--coral);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer">✕</button>
-    </div>`).join('');
+  const el = document.getElementById('customSugList'); if (!el) return;
+  const sugs = S.customSugs||[];
+  if (!sugs.length) { el.innerHTML=`<div style="font-size:11px;color:var(--text2);font-weight:600;text-align:center;padding:8px">Nenhuma sugestão personalizada ainda</div>`; return; }
+  el.innerHTML = sugs.map(s=>`<div class="sug-chip" style="position:relative"><span class="sug-ic">${s.emoji}</span><span class="sug-txt" onclick="useSug('${s.text.replace(/'/g,"\\'")}')">${s.text.substring(0,60)}${s.text.length>60?'…':''}</span><span class="sug-use" onclick="useSug('${s.text.replace(/'/g,"\\'")}')">usar</span><button onclick="deleteCustomSug('${s.id}')" style="position:absolute;top:-6px;right:-6px;background:var(--coral);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer">✕</button></div>`).join('');
 }
 
 function openCastModal() {
-  castPhotos = [];
-  selectedRole = 'eu';
-  document.getElementById('castName').value = '';
-  document.getElementById('castAlias').value = '';
-  document.getElementById('castPhotosGrid').innerHTML = '';
-  document.getElementById('castPhoto').value = '';
-  document.querySelectorAll('.role-chip').forEach(c => c.classList.remove('active'));
+  castPhotos=[]; selectedRole='eu';
+  document.getElementById('castName').value='';
+  document.getElementById('castAlias').value='';
+  document.getElementById('castPhotosGrid').innerHTML='';
+  document.getElementById('castPhoto').value='';
+  document.querySelectorAll('.role-chip').forEach(c=>c.classList.remove('active'));
   document.querySelector('[data-role="eu"]').classList.add('active');
   document.getElementById('castModal').classList.add('open');
 }
 
-function closeCastModal() {
-  document.getElementById('castModal').classList.remove('open');
-}
+function closeCastModal() { document.getElementById('castModal').classList.remove('open'); }
 
 function selectRole(el, role) {
-  document.querySelectorAll('.role-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  selectedRole = role;
-  const aliasMap = { eu:'minifran', parceiro:'parceiro', pai:'pai', mae:'mae', filho1:'filho1', filho2:'filho2', filha1:'filha1', filha2:'filha2', amigo:'amigo', avo:'avo', pet:'pet' };
-  const aliasEl = document.getElementById('castAlias');
-  if (!aliasEl.value || Object.values(aliasMap).includes(aliasEl.value)) {
-    aliasEl.value = aliasMap[role] || '';
-  }
+  document.querySelectorAll('.role-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active'); selectedRole=role;
+  const aliasMap={eu:'minifran',parceiro:'parceiro',pai:'pai',mae:'mae',filho1:'filho1',filho2:'filho2',filha1:'filha1',filha2:'filha2',amigo:'amigo',avo:'avo',pet:'pet'};
+  const aliasEl=document.getElementById('castAlias');
+  if (!aliasEl.value||Object.values(aliasMap).includes(aliasEl.value)) aliasEl.value=aliasMap[role]||'';
 }
 
 function addCastPhoto(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const label = document.getElementById('castPhotoLabel').value;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    castPhotos.push({ label, base64: e.target.result });
-    renderCastPhotosGrid();
-    input.value = '';
-    toast(' ' + label + ' adicionada!', 'ok');
-  };
+  const file=input.files[0]; if(!file)return;
+  const label=document.getElementById('castPhotoLabel').value;
+  const reader=new FileReader();
+  reader.onload=(e)=>{castPhotos.push({label,base64:e.target.result});renderCastPhotosGrid();input.value='';toast('📷 '+label+' adicionada!','ok');};
   reader.readAsDataURL(file);
 }
 
 function renderCastPhotosGrid() {
-  const grid = document.getElementById('castPhotosGrid');
-  if (!grid) return;
-  grid.innerHTML = castPhotos.map((p, i) => `
-    <div style="position:relative;width:80px">
-      <img src="${p.base64}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid var(--purple)" />
-      <div style="font-size:9px;text-align:center;color:var(--purple);font-weight:700;margin-top:2px">${p.label}</div>
-      <button onclick="removeCastPhoto(${i})" style="position:absolute;top:-4px;right:-4px;background:var(--coral);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:18px;text-align:center">✕</button>
-    </div>`).join('');
+  const grid=document.getElementById('castPhotosGrid'); if(!grid)return;
+  grid.innerHTML=castPhotos.map((p,i)=>`<div style="position:relative;width:80px"><img src="${p.base64}" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid var(--purple)"/><div style="font-size:9px;text-align:center;color:var(--purple);font-weight:700;margin-top:2px">${p.label}</div><button onclick="removeCastPhoto(${i})" style="position:absolute;top:-4px;right:-4px;background:var(--coral);color:white;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;line-height:18px;text-align:center">✕</button></div>`).join('');
 }
 
-function removeCastPhoto(i) {
-  castPhotos.splice(i, 1);
-  renderCastPhotosGrid();
-}
+function removeCastPhoto(i) { castPhotos.splice(i,1); renderCastPhotosGrid(); }
 
 function saveCastMember() {
-  const name = document.getElementById('castName').value.trim();
-  const alias = document.getElementById('castAlias').value.trim().replace('@','').toLowerCase();
-  if (!name || !alias) { toast('Preencha nome e @apelido!', 'err'); return; }
-  if (!castPhotos.length) { toast('Adicione pelo menos uma foto!', 'err'); return; }
-
-  const roleEmoji = { eu:'👤', parceiro:'❤', pai:'👨', mae:'👩', filho1:'🧒', filho2:'🧒', filha1:'👧', filha2:'👧', amigo:'🤝', avo:'👴', pet:'🐾', outro:'➕' };
-  const roleLabel = { eu:'Eu', parceiro:'Parceiro(a)', pai:'Pai', mae:'Mãe', filho1:'Filho 1', filho2:'Filho 2', filha1:'Filha 1', filha2:'Filha 2', amigo:'Amigo(a)', avo:'Avô/Avó', pet:'Pet', outro:'Outro' };
-
-  const member = {
-    id: 'cast_' + Date.now(),
-    name, alias, role: selectedRole,
-    roleLabel: roleLabel[selectedRole] || selectedRole,
-    roleEmoji: roleEmoji[selectedRole] || '👤',
-    photos: [...castPhotos], // múltiplas fotos com labels
-    photo: castPhotos[0].base64, // foto principal para avatar
-  };
-
-  S.cast = S.cast || [];
-  // Remove se já existe com mesmo alias
-  S.cast = S.cast.filter(m => m.alias !== alias);
+  const name=document.getElementById('castName').value.trim();
+  const alias=document.getElementById('castAlias').value.trim().replace('@','').toLowerCase();
+  if (!name||!alias){toast('Preencha nome e @apelido!','err');return;}
+  if (!castPhotos.length){toast('Adicione pelo menos uma foto!','err');return;}
+  const roleEmoji={eu:'👤',parceiro:'❤️',pai:'👨',mae:'👩',filho1:'🧒',filho2:'🧒',filha1:'👧',filha2:'👧',amigo:'🤝',avo:'👴',pet:'🐾',outro:'➕'};
+  const roleLabel={eu:'Eu',parceiro:'Parceiro(a)',pai:'Pai',mae:'Mãe',filho1:'Filho 1',filho2:'Filho 2',filha1:'Filha 1',filha2:'Filha 2',amigo:'Amigo(a)',avo:'Avô/Avó',pet:'Pet',outro:'Outro'};
+  const member={id:'cast_'+Date.now(),name,alias,role:selectedRole,roleLabel:roleLabel[selectedRole]||selectedRole,roleEmoji:roleEmoji[selectedRole]||'👤',photos:[...castPhotos],photo:castPhotos[0].base64};
+  S.cast=S.cast||[];
+  S.cast=S.cast.filter(m=>m.alias!==alias);
   S.cast.push(member);
-  localStorage.setItem('rw_cast', JSON.stringify(S.cast));
-  closeCastModal();
-  renderCastList();
-  toast('OK ' + member.roleEmoji + ' ' + name + ' salvo(a) com ' + castPhotos.length + ' foto(s)!', 'ok');
+  localStorage.setItem('rw_cast',JSON.stringify(S.cast));
+  closeCastModal(); renderCastList();
+  toast('✅ '+member.roleEmoji+' '+name+' salvo(a) com '+castPhotos.length+' foto(s)!','ok');
 }
 
 function deleteCastMember(id) {
-  S.cast = (S.cast || []).filter(m => m.id !== id);
-  localStorage.setItem('rw_cast', JSON.stringify(S.cast));
-  renderCastList();
-  toast('Personagem removido!');
+  S.cast=(S.cast||[]).filter(m=>m.id!==id);
+  localStorage.setItem('rw_cast',JSON.stringify(S.cast));
+  renderCastList(); toast('Personagem removido!');
 }
 
 function renderCastList() {
-  const el = document.getElementById('castList');
-  if (!el) return;
-  const cast = S.cast || [];
-  if (!cast.length) {
-    el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text2);font-size:12px;font-weight:600">Nenhum personagem cadastrado.<br>Toque em + Adicionar!</div>`;
-    return;
-  }
-  el.innerHTML = cast.map(m => `
-    <div class="cast-card">
-      ${m.photo
-        ? `<img src="${m.photo}" class="cast-avatar" />`
-        : `<div class="cast-avatar-placeholder">${m.roleEmoji}</div>`}
-      <div class="cast-info">
-        <div class="cast-name">${m.name}</div>
-        <div class="cast-alias">@${m.alias}</div>
-        <div class="cast-role">${m.roleEmoji} ${m.roleLabel} · ${(m.photos||[]).length} foto(s)</div>
-      </div>
-      <button onclick="deleteCastMember('${m.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text2)"></button>
-    </div>`).join('');
+  const el=document.getElementById('castList'); if(!el)return;
+  const cast=S.cast||[];
+  if (!cast.length){el.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text2);font-size:12px;font-weight:600">Nenhum personagem cadastrado.<br>Toque em + Adicionar!</div>`;return;}
+  el.innerHTML=cast.map(m=>`<div class="cast-card">${m.photo?`<img src="${m.photo}" class="cast-avatar"/>`:`<div class="cast-avatar-placeholder">${m.roleEmoji}</div>`}<div class="cast-info"><div class="cast-name">${m.name}</div><div class="cast-alias">@${m.alias}</div><div class="cast-role">${m.roleEmoji} ${m.roleLabel} · ${(m.photos||[]).length} foto(s)</div></div><button onclick="deleteCastMember('${m.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text2)">🗑</button></div>`).join('');
 }
 
-// Detecta @mentions e injeta fotos no prompt
 function injectCastIntoPrompt(promptText, sceneText) {
-  const cast = S.cast || [];
-  const mentioned = cast.filter(m => sceneText.toLowerCase().includes('@' + m.alias));
-  if (!mentioned.length) return { prompt: promptText, photos: [] };
-
-  const descriptions = mentioned.map(m => m.name + ' (' + m.roleLabel + ')').join(', ');
-  const enhanced = promptText + ' With: ' + descriptions + '.';
-  // Pega a primeira foto de cada personagem mencionado
-  const photos = mentioned.filter(m => m.photos && m.photos.length).map(m => m.photos[0].base64);
-  return { prompt: enhanced, photos };
+  const cast=S.cast||[];
+  const mentioned=cast.filter(m=>sceneText.toLowerCase().includes('@'+m.alias));
+  if (!mentioned.length) return {prompt:promptText,photos:[]};
+  const descriptions=mentioned.map(m=>m.name+' ('+m.roleLabel+')').join(', ');
+  const enhanced=promptText+' With: '+descriptions+'.';
+  const photos=mentioned.filter(m=>m.photos&&m.photos.length).map(m=>m.photos[0].base64);
+  return {prompt:enhanced,photos};
 }
 
-// --- NAV---
 function navTo(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach((t,i) => {
-    t.classList.toggle('active', ['grade','cena','fila','historico','config'][i] === name);
-  });
-  const page = document.getElementById('page-' + name);
-  if (page) page.classList.add('active');
-  if (name === 'historico') { renderSummary(); renderHistory(); }
-  if (name === 'fila') renderGrid();
-  if (name === 'config') {
-    const inp = document.getElementById('apiInput');
-    if (inp) inp.value = S.key ? '••••••••••••••••' : '';
-    const cn = document.getElementById('charName');
-    if (cn) cn.value = S.charName;
-    const cd = document.getElementById('charDesc');
-    if (cd) cd.value = S.charDesc;
-  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{t.classList.toggle('active',['grade','cena','fila','historico','config'][i]===name);});
+  const page=document.getElementById('page-'+name); if(page)page.classList.add('active');
+  if(name==='historico'){renderSummary();renderHistory();}
+  if(name==='fila')renderGrid();
+  if(name==='config'){const inp=document.getElementById('apiInput');if(inp)inp.value=S.key?'••••••••••••••••':'';}
 }
 
-// --- SETTINGS---
 function saveKey(){
   const k=document.getElementById('apiInput').value.trim();
   const pEl=document.getElementById('proxyInput');
   const p=pEl?pEl.value.trim():'';
   if(!k||k.includes('•')){toast('Cole sua API key!','err');return;}
-  S.key=k; localStorage.setItem('rw_key',k);
-  if(p){S.proxyUrl=p; localStorage.setItem('rw_proxy',p);}
+  S.key=k;localStorage.setItem('rw_key',k);
+  if(p){S.proxyUrl=p;localStorage.setItem('rw_proxy',p);}
   document.getElementById('apiInput').value='••••••••••••••••';
-  setDot(true); toast('Runway conectado!','ok');
+  setDot(true);toast('✅ Runway conectado!','ok');
 }
 function setDot(on){document.getElementById('apiDot').className='dot '+(on?'on':'err');document.getElementById('apiTxt').textContent=on?'on':'off';}
-function saveChar(){S.charName=document.getElementById('charName').value;S.charDesc=document.getElementById('charDesc').value;localStorage.setItem('rw_charName',S.charName);localStorage.setItem('rw_charDesc',S.charDesc);toast('Personagem salvo!','ok');}
 function clearGrade(){S.slots=[];saveSlots();renderTimeline();toast('Grade limpa!');}
-function exportData(){const blob=new Blob([JSON.stringify({slots:S.slots,scenes:S.scenes},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`diretora_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;a.click();}
-function startGrade(){if(!S.key){toast('Configure a API key primeiro!','err');navTo('config');return;}toast('OK Grade ativa! Os vídeos serão gerados automaticamente nos horários programados.','ok');}
+function exportData(){const blob=new Blob([JSON.stringify({slots:S.slots,scenes:S.scenes},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`livelife_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;a.click();}
+function startGrade(){if(!S.key){toast('Configure a API key primeiro!','err');navTo('config');return;}toast('✅ Grade ativa! Vídeos serão gerados automaticamente nos horários programados.','ok');}
 function deleteSlot(id){S.slots=S.slots.filter(s=>s.id!==id);saveSlots();renderTimeline();toast('Horário removido!');}
-
-// --- UTILS---
 function save(){localStorage.setItem('rw_scenes3',JSON.stringify(S.scenes));}
 function saveSlots(){localStorage.setItem('rw_slots',JSON.stringify(S.slots));}
 function getWeekLabel(d){return `Semana ${Math.ceil(d.getDate()/7)} · ${d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`;}
@@ -1788,7 +1306,6 @@ function toast(msg,type=''){const el=document.createElement('div');el.className=
 
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
-// Checa grade ao iniciar e a cada 30s
 init();
 setInterval(checkGrade, 30000);
 </script>
