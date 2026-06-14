@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.1</title>
+<title>Live Life v5.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -312,7 +312,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.1</div>
+    <div class="version-badge">v5.5</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -411,6 +411,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <option value="parceiro">👨 Parceiro</option>
         <option value="familia">👨‍👩‍👧 Família</option>
       </select>
+      <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+        <label style="font-size:10px;font-weight:800;color:var(--text2);font-family:'Fredoka',sans-serif">🕐 IR AO AR</label>
+        <input type="time" id="airTimeInput" style="width:100%;padding:9px 10px;font-size:13px;background:var(--bg);border:2px solid var(--border);border-radius:10px;color:var(--text);outline:none" />
+      </div>
     </div>
 
     <!-- FOTO DO LOCAL -->
@@ -431,7 +435,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     </div>
     <div class="btn-row">
       <button class="btn btn-ghost btn-full" onclick="convertPrompt()" style="display:none" id="convertBtn">✦ Converter</button>
-      <button class="btn btn-pink btn-full" onclick="addSceneManual()">+ Adicionar Cena</button>
+      <button class="btn btn-pink btn-full" onclick="addSceneManual(event)">+ Adicionar Cena</button>
     </div>
   </div>
 
@@ -458,7 +462,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <span style="display:flex;align-items:center;gap:6px"><div class="sec-dot" style="background:var(--yellow)"></div>Fila · <span id="qCount" style="color:var(--pink)">0</span> cenas</span>
       <div style="display:flex;gap:6px">
         <button class="btn btn-mint btn-sm" onclick="generateAll()">▶ Gerar tudo</button>
-        <button class="btn btn-ghost btn-sm" onclick="clearDone()">✓ Limpar</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearAll()">🗑 Limpar tudo</button>
       </div>
     </div>
     <div class="queue-grid" id="grid"></div>
@@ -632,10 +636,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 
 <div class="toasts" id="toasts"></div>
 
-<script>
-const VER = 'Live Life v3.1';
+<script charset="utf-8">
+const VER = 'Live Life v5.5';
 
-// ─── STATE ───
+// --- STATE---
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 
 const S = {
@@ -654,7 +658,7 @@ const S = {
 
 const THUMBS = ['thumb-pink','thumb-mint','thumb-yellow','thumb-blue','thumb-purple'];
 
-// ─── INIT ───
+// --- INIT---
 function init() {
   // Salva chave automaticamente se não estava salva
   if (!localStorage.getItem('rw_key') && RUNWAY_KEY) {
@@ -682,7 +686,7 @@ function init() {
   setInterval(checkGrade, 30000);
 }
 
-// ─── CLOCK ───
+// --- CLOCK---
 function startClock() {
   const tick = () => {
     const n = new Date();
@@ -697,7 +701,7 @@ function startClock() {
   tick(); setInterval(tick, 1000);
 }
 
-// ─── PERIOD ───
+// --- PERIOD---
 function getPeriod(h) {
   if (h>=5&&h<9) return 'amanhecer';
   if (h>=9&&h<12) return 'manhã';
@@ -715,20 +719,20 @@ const PERIODS = {
     {ic:'☕',t:'Preparando café na cozinha moderna, esperando a máquina de café enquanto olha pelo celular com olhos ainda sonolentos'},
     {ic:'🚿',t:'Saindo do banho enrolada na toalha branca, vapor saindo do banheiro iluminado'},
   ]},
-  'manhã':{ emoji:'☀️', label:'MANHÃ', title:'Manhã em andamento', sub:'a Mini Fran está na rotina matinal', gradient:'linear-gradient(135deg,#ff6eb4,#b57bee)', sugs:[
+  'manhã':{ emoji:'☀', label:'MANHÃ', title:'Manhã em andamento', sub:'a Mini Fran está na rotina matinal', gradient:'linear-gradient(135deg,#ff6eb4,#b57bee)', sugs:[
     {ic:'☕',t:'Tomando café com leite sentada no sofá, segurando a xícara com as duas mãos, lendo algo no celular com expressão relaxada'},
     {ic:'💻',t:'Trabalhando no notebook na mesa do home office, concentrada na tela, caneta na mão, post-its coloridos ao redor'},
-    {ic:'🏋️',t:'Malhando na academia com roupa de ginástica, levantando peso com determinação, espelhos ao redor refletindo o ambiente'},
+    {ic:'🏋',t:'Malhando na academia com roupa de ginástica, levantando peso com determinação, espelhos ao redor refletindo o ambiente'},
     {ic:'📚',t:'Estudando inglês sentada na mesa, caderno aberto, fones de ouvido no pescoço, marcando palavras com marca texto colorido'},
     {ic:'🥗',t:'Preparando smoothie saudável na cozinha, jogando frutas no liquidificador com energia e disposição matinal'},
   ]},
-  'almoço':{ emoji:'🍽️', label:'ALMOÇO', title:'Pausa para almoçar', sub:'a Mini Fran está almoçando', gradient:'linear-gradient(135deg,#ffd166,#ff8c69)', sugs:[
+  'almoço':{ emoji:'🍽', label:'ALMOÇO', title:'Pausa para almoçar', sub:'a Mini Fran está almoçando', gradient:'linear-gradient(135deg,#ffd166,#ff8c69)', sugs:[
     {ic:'🍳',t:'Cozinhando almoço na cozinha, mexendo uma panela fumegante no fogão, avental na cintura, sorrindo para o resultado'},
-    {ic:'🍽️',t:'Almoçando sozinha na mesa da cozinha bem decorada, prato colorido à frente, luz natural entrando pela janela'},
+    {ic:'🍽',t:'Almoçando sozinha na mesa da cozinha bem decorada, prato colorido à frente, luz natural entrando pela janela'},
     {ic:'😴',t:'Deitada no sofá em posição de cochilo pós almoço, coberta com uma mantinha, respiração calma e relaxada'},
     {ic:'📱',t:'Deitada de bruços no sofá scrollando o Instagram com expressão entediada e relaxada, tarde morna ao fundo'},
   ]},
-  'tarde':{ emoji:'🌤️', label:'TARDE', title:'Tarde livre', sub:'a Mini Fran está aproveitando a tarde', gradient:'linear-gradient(135deg,#5bc8ff,#3ddbb8)', sugs:[
+  'tarde':{ emoji:'🌤', label:'TARDE', title:'Tarde livre', sub:'a Mini Fran está aproveitando a tarde', gradient:'linear-gradient(135deg,#5bc8ff,#3ddbb8)', sugs:[
     {ic:'📖',t:'Lendo um livro no sofá com luz natural da janela, pernas dobradas, xícara de chá na mesinha ao lado, totalmente imersa na leitura'},
     {ic:'🧘',t:'Fazendo yoga na sala sobre um tapete roxo, posição guerreira, luz suave e plantas ao redor criando ambiente zen'},
     {ic:'💅',t:'Fazendo as unhas sentada na cama, esmalte colorido na mão, programa na TV ao fundo, momento de autocuidado'},
@@ -736,7 +740,7 @@ const PERIODS = {
     {ic:'🎨',t:'Desenhando ou pintando sentada na mesa, pincel na mão, tela colorida à frente, cabelo preso no alto com lápis'},
   ]},
   'noite':{ emoji:'🌆', label:'NOITE', title:'Noite relaxando', sub:'a Mini Fran está encerrando o dia', gradient:'linear-gradient(135deg,#b57bee,#5bc8ff)', sugs:[
-    {ic:'🍽️',t:'Jantando na mesa bem posta com vela acesa, taça de vinho tinto, prato elaborado, ambiente aconchegante com luz quente'},
+    {ic:'🍽',t:'Jantando na mesa bem posta com vela acesa, taça de vinho tinto, prato elaborado, ambiente aconchegante com luz quente'},
     {ic:'📺',t:'Assistindo série no sofá enrolada em coberta, pipoca no colo, rindo de algo na tela, luz azul da TV no rosto'},
     {ic:'🧴',t:'Ritual noturno de skincare no banheiro, aplicando sérum no rosto em frente ao espelho iluminado, pele limpa brilhando'},
     {ic:'📱',t:'Videochamada com amiga deitada na cama, gesticulando animada, rindo muito, fundo do quarto ao entardecer'},
@@ -788,7 +792,7 @@ function updateCharCount(el) {
   const el2 = document.getElementById('charCount');
   if (!el2) return;
   if (len > 400) {
-    el2.textContent = `⚠️ ${len}/500 chars — será truncado pelo Runway`;
+    el2.textContent = `⚠ ${len}/500 chars - será truncado pelo Runway`;
     el2.style.color = 'var(--coral)';
   } else {
     el2.textContent = `${len}/500`;
@@ -818,10 +822,10 @@ function useSug(txt) {
   document.getElementById('convBox').style.display = 'none';
   S.convertedPrompt = '';
   navTo('cena');
-  toast('Sugestão carregada! 🎬');
+  toast('Sugestão carregada! &#x1F3AC;');
 }
 
-// ─── GRADE DO DIA ───
+// --- GRADE DO DIA---
 function toggleAddForm() {
   const f = document.getElementById('addSlotForm');
   f.classList.toggle('open');
@@ -886,8 +890,8 @@ function renderTimeline() {
 
     let badge = '';
     if (isNow && slot.status!=='done') badge = `<span class="slot-badge sb-now">🔴 AGORA</span>`;
-    else if (slot.status==='done') badge = `<span class="slot-badge sb-done">✅ pronto</span>`;
-    else if (slot.status==='generating') badge = `<span class="slot-badge sb-generating">✨ gerando</span>`;
+    else if (slot.status==='done') badge = `<span class="slot-badge sb-done">&#x2705; pronto</span>`;
+    else if (slot.status==='generating') badge = `<span class="slot-badge sb-generating">&#x2728; gerando</span>`;
     else if (!isPast) badge = `<span class="slot-badge sb-upcoming">⏰ ${slot.time}</span>`;
     else badge = `<span class="slot-badge sb-done" style="opacity:0.5">passou</span>`;
 
@@ -903,8 +907,8 @@ function renderTimeline() {
         </div>
         ${slot.desc && slot.desc !== slot.label ? `<div class="slot-desc">${slot.desc.substring(0,80)}${slot.desc.length>80?'…':''}</div>` : ''}
         <div class="slot-actions">
-          <button class="btn btn-pink btn-xs" onclick="event.stopPropagation();triggerSlotNow('${slot.id}')">▶ Gerar agora</button>
-          <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();deleteSlot('${slot.id}')">🗑</button>
+          <button class="btn btn-pink btn-xs" onclick="event.stopPropagation();triggerSlotNow('${slot.id}')">&#9654; Gerar agora</button>
+          <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();deleteSlot('${slot.id}')">&#x1F5D1;</button>
         </div>
       </div>
     </div>`;
@@ -944,7 +948,7 @@ function checkGrade() {
       slot.status = 'generating';
       saveSlots();
       renderTimeline();
-      toast(`🎬 ${slot.time} — gerando: ${slot.label}`);
+      toast(`&#x1F3AC; ${slot.time} - gerando: ${slot.label}`);
       triggerSlot(slot);
     }
   });
@@ -956,7 +960,7 @@ async function triggerSlotNow(slotId) {
   slot.status = 'generating';
   slot.triggered = true;
   saveSlots(); renderTimeline();
-  const msg = S.key ? `▶ Gerando vídeo: ${slot.label}` : `🎨 Criando prévia: ${slot.label}`;
+  const msg = S.key ? `&#9654; Gerando vídeo: ${slot.label}` : `🎨 Criando prévia: ${slot.label}`;
   toast(msg, 'ok');
   await triggerSlot(slot);
 }
@@ -1028,7 +1032,7 @@ function buildPrompt(desc, char) {
   return `${charDescs[char]||charDescs.mini_fran}. ${desc}. ${lightMap[getPeriod(h)]}, cinematic lifestyle footage, warm tones, 4K quality.`;
 }
 
-// ─── CENA MANUAL ───
+// --- CENA MANUAL---
 async function convertPrompt() {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
@@ -1068,7 +1072,7 @@ Reply with ONLY the prompt text.`}]
   }
 }
 
-// ─── FOTO DO LOCAL ───
+// --- FOTO DO LOCAL---
 let currentPhotoBase64 = null;
 
 function previewPhoto(input) {
@@ -1080,7 +1084,7 @@ function previewPhoto(input) {
     document.getElementById('photoImg').src = currentPhotoBase64;
     document.getElementById('photoPreview').style.display = 'block';
     document.getElementById('noPhotoNote').style.display = 'none';
-    toast('📷 Foto carregada!', 'ok');
+    toast('&#x1F4F7; Foto carregada!', 'ok');
   };
   reader.readAsDataURL(file);
 }
@@ -1090,13 +1094,19 @@ function clearPhoto() {
   document.getElementById('photoUpload').value = '';
   document.getElementById('photoPreview').style.display = 'none';
   document.getElementById('noPhotoNote').style.display = 'block';
-  toast('Foto removida — sistema vai gerar automaticamente');
+  toast('Foto removida - sistema vai gerar automaticamente');
 }
 
-function addSceneManual() {
+function addSceneManual(e) {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
+
+  // Previne duplo clique
+  const btn = e ? e.target : null;
+  if (btn) { btn.disabled = true; setTimeout(() => btn.disabled = false, 2000); }
+
   const char = document.getElementById('charSel').value;
+  const airTime = document.getElementById('airTimeInput') ? document.getElementById('airTimeInput').value : '';
   const now = new Date();
 
   const basePrompt = S.convertedPrompt || buildPrompt(free, char);
@@ -1110,6 +1120,7 @@ function addSceneManual() {
     char, period:getPeriod(now.getHours()),
     status:'pending', videoUrl:null, taskId:null, progress:0,
     photoBase64: currentPhotoBase64 || null,
+    airTime: airTime || null,
     createdAt:now.toISOString(),
     timeLabel:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
     dateLabel:now.toLocaleDateString('pt-BR'),
@@ -1121,18 +1132,21 @@ function addSceneManual() {
   save();
   document.getElementById('freeInput').value='';
   document.getElementById('convBox').style.display='none';
+  document.getElementById('mentionHints').style.display='none';
+  document.getElementById('charCount').textContent='';
+  if(document.getElementById('airTimeInput')) document.getElementById('airTimeInput').value='';
   S.convertedPrompt='';
   clearPhoto();
   renderGrid(); renderSummary();
-  toast('🎬 Cena adicionada!', 'ok');
+  toast('&#x1F3AC; Cena adicionada à fila!', 'ok');
   navTo('fila');
 }
 
-// ─── GENERATE ───
+// --- GENERATE---
 async function generateAll() {
   const pending = S.scenes.filter(s=>s.status==='pending');
   if (!pending.length) { toast('Nenhuma cena pendente!','err'); return; }
-  const msg = S.key ? `▶ Gerando ${pending.length} vídeo(s) no Runway...` : `🎨 Gerando ${pending.length} prévia(s)...`;
+  const msg = S.key ? `&#9654; Gerando ${pending.length} vídeo(s) no Runway...` : `🎨 Gerando ${pending.length} prévia(s)...`;
   toast(msg);
   for (const s of pending) { await generateScene(s); await sleep(800); }
 }
@@ -1144,13 +1158,19 @@ async function genSingle() {
 }
 
 async function callRunway(path, method, body) {
-  const res = await fetch('/.netlify/functions/runway', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ path, method, body, apiKey: S.key })
-  });
+  // Chama Runway diretamente (GitHub Pages não suporta Functions)
+  const options = {
+    method: method || 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + S.key,
+      'X-Runway-Version': '2024-11-06'
+    }
+  };
+  if (body && method === 'POST') options.body = JSON.stringify(body);
+  const res = await fetch('https://api.dev.runwayml.com/v1' + path, options);
   const data = await res.json();
-  if (data.error) throw new Error(data.error);
+  if (data.error) throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data));
   return data;
 }
 
@@ -1159,7 +1179,7 @@ async function generateScene(scene) {
   save(); renderGrid();
   const timerInterval = setInterval(() => { if(scene.status==='generating') renderGrid(); else clearInterval(timerInterval); }, 1000);
 
-  // Sem API key — prévia local
+  // Sem API key - prévia local
   if (!S.key) {
     await sleep(1200);
     const preview = generateLocalPreview(scene.freeText, scene.char, scene.period);
@@ -1200,7 +1220,7 @@ async function generateScene(scene) {
         if (poll.status === 'FAILED') throw new Error('Imagem falhou: ' + (poll.failure||'desconhecido'));
       }
       if (!imageUrl) throw new Error('Timeout na geração da imagem (60s)');
-      toast('✅ Imagem gerada! Criando vídeo...');
+      toast('&#x2705; Imagem gerada! Criando vídeo...');
     }
 
     // Gera vídeo com a imagem
@@ -1226,18 +1246,18 @@ async function generateScene(scene) {
       if (poll.status === 'SUCCEEDED') {
         scene.status='done'; scene.videoUrl=poll.output[0]; scene.progress=100;
         save(); renderGrid(); renderSummary();
-        toast('🎬 Vídeo pronto!','ok');
+        toast('&#x1F3AC; Vídeo pronto!','ok');
         clearInterval(timerInterval);
         return;
       }
       if (poll.status === 'FAILED') throw new Error('Vídeo falhou: ' + (poll.failure||poll.failureCode||'desconhecido'));
     }
-    throw new Error('Timeout no vídeo (90s) — tente novamente');
+    throw new Error('Timeout no vídeo (90s) - tente novamente');
 
   } catch(e) {
     scene.status='error'; scene.errorMsg=e.message;
     save(); renderGrid();
-    toast('❌ '+e.message,'err');
+    toast('&#x274C; '+e.message,'err');
     clearInterval(timerInterval);
   }
 }
@@ -1249,7 +1269,7 @@ function generateLocalPreview(text, char, period) {
 
   // Detecta ambiente e tema
   const themes = [
-    { keys:['academia','treinar','exerc','muscula','correr'], emoji:'🏋️', cor1:'#FF6B6B', cor2:'#FF8E53', amb:'Academia', luz:'Luz natural intensa', emoc:'Energia e determinação' },
+    { keys:['academia','treinar','exerc','muscula','correr'], emoji:'🏋', cor1:'#FF6B6B', cor2:'#FF8E53', amb:'Academia', luz:'Luz natural intensa', emoc:'Energia e determinação' },
     { keys:['dormir','cama','acordar','espreguiç'], emoji:'🛌', cor1:'#A18CD1', cor2:'#FBC2EB', amb:'Quarto aconchegante', luz:'Luz suave da manhã', emoc:'Calma e descanso' },
     { keys:['café','cafezin','cappuccino','xícara'], emoji:'☕', cor1:'#F6D365', cor2:'#FDA085', amb:'Cozinha acolhedora', luz:'Luz dourada matinal', emoc:'Tranquilidade e prazer' },
     { keys:['trabalh','notebook','computador','home office','reunião'], emoji:'💻', cor1:'#5BC8FF', cor2:'#B57BEE', amb:'Home office moderno', luz:'Luz natural da tarde', emoc:'Foco e produtividade' },
@@ -1265,9 +1285,9 @@ function generateLocalPreview(text, char, period) {
 
   const periodThemes = {
     'amanhecer':{ emoji:'🌅', cor1:'#FFBE76', cor2:'#FF7979', amb:'Quarto ao amanhecer', luz:'Primeira luz do dia', emoc:'Início e esperança' },
-    'manhã':{ emoji:'☀️', cor1:'#F9CA24', cor2:'#F0932B', amb:'Casa iluminada', luz:'Luz solar da manhã', emoc:'Disposição e energia' },
-    'almoço':{ emoji:'🍽️', cor1:'#BADC58', cor2:'#F9CA24', amb:'Mesa do almoço', luz:'Luz do meio-dia', emoc:'Pausa e nutrição' },
-    'tarde':{ emoji:'🌤️', cor1:'#7EC8E3', cor2:'#B57BEE', amb:'Casa à tarde', luz:'Luz dourada da tarde', emoc:'Fluidez e calma' },
+    'manhã':{ emoji:'☀', cor1:'#F9CA24', cor2:'#F0932B', amb:'Casa iluminada', luz:'Luz solar da manhã', emoc:'Disposição e energia' },
+    'almoço':{ emoji:'🍽', cor1:'#BADC58', cor2:'#F9CA24', amb:'Mesa do almoço', luz:'Luz do meio-dia', emoc:'Pausa e nutrição' },
+    'tarde':{ emoji:'🌤', cor1:'#7EC8E3', cor2:'#B57BEE', amb:'Casa à tarde', luz:'Luz dourada da tarde', emoc:'Fluidez e calma' },
     'noite':{ emoji:'🌆', cor1:'#F8B500', cor2:'#FF6B6B', amb:'Casa à noite', luz:'Luz interior aconchegante', emoc:'Relaxamento e reflexão' },
     'noite alta':{ emoji:'🌙', cor1:'#6C5CE7', cor2:'#A29BFE', amb:'Quarto à noite', luz:'Luz suave e íntima', emoc:'Sonolência e paz' },
     'madrugada':{ emoji:'🌌', cor1:'#2D3561', cor2:'#6C5CE7', amb:'Casa em silêncio', luz:'Escuridão com luz suave', emoc:'Repouso profundo' },
@@ -1308,7 +1328,7 @@ async function pollScene(scene, slot) {
         scene.status = 'done'; scene.videoUrl = data.output[0]; scene.progress = 100;
         if (slot) { slot.status = 'done'; saveSlots(); renderTimeline(); }
         save(); renderGrid(); renderSummary();
-        toast('🎬 Vídeo pronto!', 'ok');
+        toast('&#x1F3AC; Vídeo pronto!', 'ok');
         return;
       }
       if (data.status === 'FAILED') {
@@ -1319,72 +1339,77 @@ async function pollScene(scene, slot) {
       scene.status = 'error';
       scene.errorMsg = e.message;
       save(); renderGrid();
-      toast('❌ Erro: ' + e.message, 'err');
+      toast('&#x274C; Erro: ' + e.message, 'err');
       return;
     }
   }
 
   // Timeout de 1.5 min
   scene.status = 'error';
-  scene.errorMsg = 'Timeout — Runway demorou mais de 1.5 min. Tente gerar novamente.';
+  scene.errorMsg = 'Timeout - Runway demorou mais de 1.5 min. Tente gerar novamente.';
   save(); renderGrid();
   toast('⏱ Timeout! Tente gerar novamente.', 'err');
 }
 
-// ─── RENDER GRID ───
+// --- RENDER GRID---
 function renderGrid() {
   const grid=document.getElementById('grid');
   document.getElementById('qCount').textContent=S.scenes.length;
   if(!S.scenes.length){
-    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🎬</div><div class="empty-text">Monte a grade do dia ou adicione cenas manualmente!</div></div>`;
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">&#x1F3AC;</div><div class="empty-text">Monte a grade do dia ou adicione cenas manualmente!</div></div>`;
     return;
   }
-  const bm={pending:`<span class="badge b-pending">⏳ aguardando</span>`,generating:`<span class="badge b-generating">✨ gerando</span>`,done:`<span class="badge b-done">✅ pronto</span>`,reused:`<span class="badge b-reused">♻️ reutilizado</span>`,error:`<span class="badge b-error">❌ erro</span>`};
+  const bm={pending:`<span class="badge b-pending">&#x23F3; aguardando</span>`,generating:`<span class="badge b-generating">&#x2728; gerando</span>`,done:`<span class="badge b-done">&#x2705; pronto</span>`,reused:`<span class="badge b-reused">&#x267B; reutilizado</span>`,error:`<span class="badge b-error">&#x274C; erro</span>`};
   grid.innerHTML=S.scenes.map(s=>{
     let thumb='';
     if(s.status==='pending') {
       thumb = s.photoBase64
-        ? `<img src="${s.photoBase64}" style="width:100%;height:100%;object-fit:cover;opacity:0.7"/><div class="status-overlay" style="background:rgba(255,255,255,0.5)"><div style="font-size:20px">📷</div><div style="font-size:10px;font-weight:700;color:var(--text)">foto carregada</div></div>`
-        : `<div class="thumb-icon">🎬</div>`;
+        ? `<img src="${s.photoBase64}" style="width:100%;height:100%;object-fit:cover;opacity:0.7"/><div class="status-overlay" style="background:rgba(255,255,255,0.5)"><div style="font-size:20px">&#x1F4F7;</div><div style="font-size:10px;font-weight:700;color:var(--text)">foto carregada</div></div>`
+        : `<div class="thumb-icon">&#x1F3AC;</div>`;
     }
     else if(s.status==='generating') {
       const elapsed = s.startedAt ? Math.floor((Date.now() - s.startedAt)/1000) : 0;
       const mins = Math.floor(elapsed/60); const secs = elapsed%60;
       const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
       const pct = Math.min(95, s.progress||5);
-      thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:16px;color:var(--purple);font-weight:800;margin-top:4px">${Math.round(pct)}%</div><div class="prog-bar" style="margin-top:4px;width:80%"><div class="prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--text2);margin-top:4px">⏱ ${timeStr} · ~2-3min total</div></div><div class="thumb-icon">🎬</div>`;
+      thumb=`<div class="status-overlay"><div class="spinner"></div><div style="font-size:16px;color:var(--purple);font-weight:800;margin-top:4px">${Math.round(pct)}%</div><div class="prog-bar" style="margin-top:4px;width:80%"><div class="prog-fill" style="width:${pct}%"></div></div><div style="font-size:10px;color:var(--text2);margin-top:4px">⏱ ${timeStr} &middot; ~2-3min total</div></div><div class="thumb-icon">&#x1F3AC;</div>`;
     }
     else if(s.status==='done' && s.preview) {
       thumb=`<div style="width:100%;height:100%;background:linear-gradient(135deg,${s.preview.cor_dominante||'#ffb6c1'},${s.preview.cor_secundaria||'#c8a2c8'});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px">
-        <div style="font-size:32px">${s.preview.emoji_cena||'🎬'}</div>
+        <div style="font-size:32px">${s.preview.emoji_cena||'&#x1F3AC;'}</div>
         <div style="font-size:10px;color:white;font-weight:700;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.3);line-height:1.3">${s.preview.ambiente||''}</div>
       </div>`;
     }
     else if(s.status==='done') {
       thumb = s.videoUrl
         ? `<video src="${s.videoUrl}" muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover"></video>`
-        : `<div class="thumb-icon">✅</div>`;
+        : `<div class="thumb-icon">&#x2705;</div>`;
     }
-    else if(s.status==='reused') thumb=`<div class="thumb-icon">♻️</div>`;
-    else if(s.status==='error') thumb=`<div style="background:var(--coral-light);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px"><div style="font-size:24px">❌</div><div style="font-size:10px;color:var(--coral);font-weight:700;text-align:center;line-height:1.4">${s.errorMsg||'Erro na geração'}</div></div>`;
+    else if(s.status==='reused') thumb=`<div class="thumb-icon">&#x267B;</div>`;
+    else if(s.status==='error') thumb=`<div style="background:var(--coral-light);width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px"><div style="font-size:24px">&#x274C;</div><div style="font-size:10px;color:var(--coral);font-weight:700;text-align:center;line-height:1.4">${s.errorMsg||'Erro na geração'}</div></div>`;
     const short=s.freeText.length>42?s.freeText.substring(0,42)+'…':s.freeText;
+    const airBadge = s.airTime ? `<span style="font-size:10px;background:var(--mint-light);color:#009970;border:1.5px solid var(--mint);padding:2px 7px;border-radius:8px;font-weight:700;font-family:'Fredoka',sans-serif">&#x1F550; ${s.airTime}</span>` : '';
     const actionBtns = s.status==='error'
       ? `<div style="display:flex;gap:6px;margin-top:6px">
-          <button onclick="event.stopPropagation();retryScene('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:6px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">🔄 Tentar novamente</button>
-          <button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--coral-light);color:var(--coral);border:2px solid var(--coral);padding:6px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">🗑</button>
+          <button onclick="event.stopPropagation();retryScene('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:6px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">&#x1F504; Tentar novamente</button>
+          <button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--coral-light);color:var(--coral);border:2px solid var(--coral);padding:6px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">&#x1F5D1;</button>
         </div>`
       : s.status==='done'
       ? `<div style="display:flex;gap:6px;margin-top:6px">
-          <button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:5px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">🗑 Excluir</button>
-          <button onclick="event.stopPropagation();openModal('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--pink),var(--purple));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">▶ Ver vídeo</button>
+          <button onclick="event.stopPropagation();reuseSceneDirect('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--mint),var(--blue));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">&#x267B; Reutilizar</button>
+          <button onclick="event.stopPropagation();openModal('${s.id}')" style="flex:1;background:linear-gradient(135deg,var(--pink),var(--purple));color:white;border:none;padding:5px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">&#9654; Ver</button>
+          <button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:5px 8px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">&#x1F5D1;</button>
         </div>`
+      : s.status==='pending'
+      ? `<div style="margin-top:6px"><button onclick="event.stopPropagation();deleteScene('${s.id}')" style="background:var(--bg);color:var(--text2);border:1.5px solid var(--border);padding:4px 10px;border-radius:8px;font-family:'Fredoka',sans-serif;font-size:11px;cursor:pointer">&#x1F5D1; Remover</button></div>`
       : '';
     return `<div class="scene-card" onclick="openModal('${s.id}')">
       <div class="scene-thumb ${s.thumbColor||'thumb-pink'}">${thumb}</div>
       <div class="scene-info">
         <div class="scene-title">${short}</div>
-        <div class="scene-bottom">
-          <span class="scene-time-label">${s.timeLabel} · ${s.dateLabel}</span>
+        <div class="scene-bottom" style="flex-wrap:wrap;gap:4px">
+          <span class="scene-time-label">${s.timeLabel} &middot; ${s.dateLabel}</span>
+          ${airBadge}
           ${bm[s.status]||''}
         </div>
         ${actionBtns}
@@ -1393,10 +1418,45 @@ function renderGrid() {
   }).join('');
 }
 
+function clearAll() {
+  if (!S.scenes.length) { toast('Fila já está vazia!'); return; }
+  S.scenes = [];
+  save(); renderGrid(); renderSummary();
+  toast('Fila limpa!');
+}
+
+function clearDone(){
+  S.scenes = S.scenes.filter(s=>s.status!=='pending');
+  save(); renderGrid(); renderSummary();
+  toast('Pendentes removidos!');
+}
+
+function reuseSceneDirect(id) {
+  const orig = S.scenes.find(x=>x.id===id);
+  if (!orig) return;
+  const now = new Date();
+  const copy = {
+    ...orig,
+    id: 'sc_'+Date.now(),
+    status: 'reused',
+    videoUrl: orig.videoUrl,
+    isReuse: true,
+    reuseFrom: id,
+    timeLabel: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    dateLabel: now.toLocaleDateString('pt-BR'),
+    weekLabel: getWeekLabel(now),
+    airTime: null,
+    progress: 100,
+  };
+  S.scenes.unshift(copy);
+  save(); renderGrid(); renderSummary();
+  toast('&#x267B; Cena reutilizada na fila - sem gastar crédito!', 'ok');
+}
+
 function deleteScene(id) {
   S.scenes = S.scenes.filter(x => x.id !== id);
   save(); renderGrid(); renderSummary();
-  toast('Cena excluída!');
+  toast('Cena removida!');
 }
 
 async function retryScene(id) {
@@ -1407,13 +1467,11 @@ async function retryScene(id) {
   scene.progress = 0;
   scene.taskId = null;
   save(); renderGrid();
-  toast('🔄 Tentando novamente...');
+  toast('&#x1F504; Tentando novamente...');
   await generateScene(scene);
 }
 
-function clearDone(){S.scenes=S.scenes.filter(s=>s.status!=='done');save();renderGrid();renderSummary();toast('Cenas prontas removidas!');}
-
-// ─── SUMMARY ───
+// --- SUMMARY---
 function renderSummary() {
   const el=document.getElementById('summaryBox');
   const today=new Date().toLocaleDateString('pt-BR');
@@ -1424,7 +1482,7 @@ function renderSummary() {
   if(!ts.length){el.innerHTML=`<div class="empty-state" style="padding:20px 0"><div class="empty-icon">📋</div><div class="empty-text">Nenhuma cena hoje ainda</div></div>`;return;}
   el.innerHTML=`
     <div class="sum-card pink">
-      <div class="sum-title">${PERIODS[getPeriod(h)].emoji} Hoje · ${today}</div>
+      <div class="sum-title">${PERIODS[getPeriod(h)].emoji} Hoje &middot; ${today}</div>
       <ul class="sum-list">
         <li>${ts.length} cenas planejadas</li>
         <li>${done.length} prontas</li>
@@ -1432,10 +1490,10 @@ function renderSummary() {
         <li>${S.slots.filter(s=>s.status==='done').length} horários da grade concluídos</li>
       </ul>
     </div>
-    ${done.length?`<div class="sum-card mint"><div class="sum-title">✅ Concluídas</div><ul class="sum-list">${done.map(s=>`<li>${s.timeLabel} — ${s.freeText.substring(0,38)}${s.freeText.length>38?'…':''}</li>`).join('')}</ul></div>`:''}`;
+    ${done.length?`<div class="sum-card mint"><div class="sum-title">&#x2705; Concluídas</div><ul class="sum-list">${done.map(s=>`<li>${s.timeLabel} - ${s.freeText.substring(0,38)}${s.freeText.length>38?'…':''}</li>`).join('')}</ul></div>`:''}`;
 }
 
-// ─── HISTORY ───
+// --- HISTORY---
 function renderHistory() {
   const q=document.getElementById('histSearch').value.toLowerCase();
   const el=document.getElementById('historyBox');
@@ -1458,49 +1516,38 @@ function renderHistory() {
     </div>`).join('');
 }
 
-// ─── SLOT MODAL (inline) ───
+// --- SLOT MODAL (inline)---
 function openSlotModal(slotId) {
   const slot = S.slots.find(s=>s.id===slotId);
   if (!slot) return;
   // Reutiliza o modal existente como visualizador de slot
   S.activeModal = null;
-  document.getElementById('modalTitle').textContent = `${slot.time} — ${slot.label}`;
-  document.getElementById('modalMeta').textContent = `Personagem: ${slot.char} · Status: ${slot.status}`;
+  document.getElementById('modalTitle').textContent = `${slot.time} - ${slot.label}`;
+  document.getElementById('modalMeta').textContent = `Personagem: ${slot.char} &middot; Status: ${slot.status}`;
   document.getElementById('modalPrompt').textContent = slot.desc;
 
   // Checar se tem cena gerada
   const scene = slot.sceneId ? S.scenes.find(s=>s.id===slot.sceneId) : null;
   const vid = document.getElementById('modalVid');
-  vid.innerHTML = (scene && scene.videoUrl) ? `<video src="${scene.videoUrl}" controls autoplay loop style="width:100%;height:100%;object-fit:cover"></video>` : '🎬';
+  vid.innerHTML = (scene && scene.videoUrl) ? `<video src="${scene.videoUrl}" controls autoplay loop style="width:100%;height:100%;object-fit:cover"></video>` : '&#x1F3AC;';
 
   document.getElementById('modal').classList.add('open');
 }
 
-// ─── MODAL ───
+// --- MODAL---
 function openModal(id) {
   const s=S.scenes.find(x=>x.id===id);if(!s)return;
   S.activeModal=id;
   document.getElementById('modalTitle').textContent=s.freeText;
-  document.getElementById('modalMeta').textContent=`${s.timeLabel} · ${s.dateLabel} · ${s.char} · ${s.period}`;
-  document.getElementById('modalPrompt').textContent=s.prompt;
+  const airInfo = s.airTime ? ` &middot; &#x1F550; ${s.airTime}` : '';
+  document.getElementById('modalMeta').textContent=`${s.timeLabel} &middot; ${s.dateLabel} &middot; ${s.char}${airInfo}`;
+  // Prompt apenas em inglês para o Runway
+  document.getElementById('modalPrompt').textContent = s.prompt.replace(/[^\x00-\x7F\s.,!?'"()\-:;@#]/g, '') || s.prompt;
   const vid=document.getElementById('modalVid');
-  if(s.preview && s.isPreview) {
-    vid.innerHTML=`
-      <div style="width:100%;height:100%;background:linear-gradient(135deg,${s.preview.cor_dominante||'#ffb6c1'},${s.preview.cor_secundaria||'#c8a2c8'});display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px">
-        <div style="font-size:56px">${s.preview.emoji_cena||'🎬'}</div>
-        <div style="font-size:16px;color:white;font-weight:700;text-align:center;font-family:Fredoka,sans-serif">${s.preview.titulo||s.freeText}</div>
-        <div style="font-size:12px;color:rgba(255,255,255,0.85);text-align:center;line-height:1.5;max-width:90%">${s.preview.descricao||''}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
-          <span style="background:rgba(255,255,255,0.25);color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">📍 ${s.preview.ambiente||''}</span>
-          <span style="background:rgba(255,255,255,0.25);color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">💡 ${s.preview.iluminacao||''}</span>
-          <span style="background:rgba(255,255,255,0.25);color:white;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">✨ ${s.preview.emocao||''}</span>
-        </div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.6);margin-top:4px">PRÉVIA · vídeo real com Runway em breve</div>
-      </div>`;
-  } else if(s.videoUrl) {
-    vid.innerHTML=`<video src="${s.videoUrl}" controls autoplay loop style="width:100%;height:100%;object-fit:cover"></video>`;
+  if(s.videoUrl) {
+    vid.innerHTML=`<video src="${s.videoUrl}" controls autoplay loop playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
   } else {
-    vid.innerHTML='🎬';
+    vid.innerHTML='&#x1F3AC;';
   }
   document.getElementById('modal').classList.add('open');
 }
@@ -1509,11 +1556,11 @@ function reuseModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s)retur
 function dlModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s||!s.videoUrl){toast('Vídeo não gerado ainda','err');return;}const a=document.createElement('a');a.href=s.videoUrl;a.download=`cena_${s.timeLabel.replace(':','-')}.mp4`;a.click();}
 function delModal(){S.scenes=S.scenes.filter(x=>x.id!==S.activeModal);save();closeModal();renderGrid();renderSummary();toast('Cena excluída!');}
 
-// ─── ELENCO ───
+// --- ELENCO---
 let castPhotos = []; // array de {label, base64}
 let selectedRole = 'eu';
 
-// ─── SUGESTÕES PERSONALIZADAS ───
+// --- SUGESTÕES PERSONALIZADAS---
 function openCustomSugModal() {
   document.getElementById('sugEmoji').value = '';
   document.getElementById('sugText').value = '';
@@ -1530,7 +1577,7 @@ function saveCustomSug() {
   localStorage.setItem('rw_customSugs', JSON.stringify(S.customSugs));
   document.getElementById('customSugModal').classList.remove('open');
   renderCustomSugs();
-  toast('✨ Sugestão salva!', 'ok');
+  toast('&#x2728; Sugestão salva!', 'ok');
 }
 
 function deleteCustomSug(id) {
@@ -1593,7 +1640,7 @@ function addCastPhoto(input) {
     castPhotos.push({ label, base64: e.target.result });
     renderCastPhotosGrid();
     input.value = '';
-    toast('📷 ' + label + ' adicionada!', 'ok');
+    toast('&#x1F4F7; ' + label + ' adicionada!', 'ok');
   };
   reader.readAsDataURL(file);
 }
@@ -1620,7 +1667,7 @@ function saveCastMember() {
   if (!name || !alias) { toast('Preencha nome e @apelido!', 'err'); return; }
   if (!castPhotos.length) { toast('Adicione pelo menos uma foto!', 'err'); return; }
 
-  const roleEmoji = { eu:'👤', parceiro:'❤️', pai:'👨', mae:'👩', filho1:'🧒', filho2:'🧒', filha1:'👧', filha2:'👧', amigo:'🤝', avo:'👴', pet:'🐾', outro:'➕' };
+  const roleEmoji = { eu:'👤', parceiro:'❤', pai:'👨', mae:'👩', filho1:'🧒', filho2:'🧒', filha1:'👧', filha2:'👧', amigo:'🤝', avo:'👴', pet:'🐾', outro:'➕' };
   const roleLabel = { eu:'Eu', parceiro:'Parceiro(a)', pai:'Pai', mae:'Mãe', filho1:'Filho 1', filho2:'Filho 2', filha1:'Filha 1', filha2:'Filha 2', amigo:'Amigo(a)', avo:'Avô/Avó', pet:'Pet', outro:'Outro' };
 
   const member = {
@@ -1639,7 +1686,7 @@ function saveCastMember() {
   localStorage.setItem('rw_cast', JSON.stringify(S.cast));
   closeCastModal();
   renderCastList();
-  toast('✅ ' + member.roleEmoji + ' ' + name + ' salvo(a) com ' + castPhotos.length + ' foto(s)!', 'ok');
+  toast('&#x2705; ' + member.roleEmoji + ' ' + name + ' salvo(a) com ' + castPhotos.length + ' foto(s)!', 'ok');
 }
 
 function deleteCastMember(id) {
@@ -1665,9 +1712,9 @@ function renderCastList() {
       <div class="cast-info">
         <div class="cast-name">${m.name}</div>
         <div class="cast-alias">@${m.alias}</div>
-        <div class="cast-role">${m.roleEmoji} ${m.roleLabel} · ${(m.photos||[]).length} foto(s)</div>
+        <div class="cast-role">${m.roleEmoji} ${m.roleLabel} &middot; ${(m.photos||[]).length} foto(s)</div>
       </div>
-      <button onclick="deleteCastMember('${m.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text2)">🗑</button>
+      <button onclick="deleteCastMember('${m.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text2)">&#x1F5D1;</button>
     </div>`).join('');
 }
 
@@ -1684,7 +1731,7 @@ function injectCastIntoPrompt(promptText, sceneText) {
   return { prompt: enhanced, photos };
 }
 
-// ─── NAV ───
+// --- NAV---
 function navTo(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach((t,i) => {
@@ -1704,19 +1751,19 @@ function navTo(name) {
   }
 }
 
-// ─── SETTINGS ───
+// --- SETTINGS---
 function saveKey(){const k=document.getElementById('apiInput').value.trim();if(!k||k.includes('•')){toast('Cole sua API key!','err');return;}S.key=k;localStorage.setItem('rw_key',k);document.getElementById('apiInput').value='••••••••••••••••';setDot(true);toast('🔌 Runway conectado!','ok');}
 function setDot(on){document.getElementById('apiDot').className='dot '+(on?'on':'err');document.getElementById('apiTxt').textContent=on?'on':'off';}
 function saveChar(){S.charName=document.getElementById('charName').value;S.charDesc=document.getElementById('charDesc').value;localStorage.setItem('rw_charName',S.charName);localStorage.setItem('rw_charDesc',S.charDesc);toast('Personagem salvo!','ok');}
 function clearGrade(){S.slots=[];saveSlots();renderTimeline();toast('Grade limpa!');}
 function exportData(){const blob=new Blob([JSON.stringify({slots:S.slots,scenes:S.scenes},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`diretora_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;a.click();}
-function startGrade(){if(!S.key){toast('Configure a API key primeiro!','err');navTo('config');return;}toast('✅ Grade ativa! Os vídeos serão gerados automaticamente nos horários programados.','ok');}
+function startGrade(){if(!S.key){toast('Configure a API key primeiro!','err');navTo('config');return;}toast('&#x2705; Grade ativa! Os vídeos serão gerados automaticamente nos horários programados.','ok');}
 function deleteSlot(id){S.slots=S.slots.filter(s=>s.id!==id);saveSlots();renderTimeline();toast('Horário removido!');}
 
-// ─── UTILS ───
+// --- UTILS---
 function save(){localStorage.setItem('rw_scenes3',JSON.stringify(S.scenes));}
 function saveSlots(){localStorage.setItem('rw_slots',JSON.stringify(S.slots));}
-function getWeekLabel(d){return `Semana ${Math.ceil(d.getDate()/7)} · ${d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`;}
+function getWeekLabel(d){return `Semana ${Math.ceil(d.getDate()/7)} &middot; ${d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`;}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 function toast(msg,type=''){const el=document.createElement('div');el.className='toast '+(type==='ok'?'ok':type==='err'?'err':'');el.textContent=msg;document.getElementById('toasts').appendChild(el);setTimeout(()=>el.remove(),3000);}
 
