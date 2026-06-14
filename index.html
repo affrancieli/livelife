@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v3.8</title>
+<title>Live Life v3.9</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -38,7 +37,7 @@ body {
     radial-gradient(circle at 15% 20%, rgba(255,110,180,0.12) 0%, transparent 50%),
     radial-gradient(circle at 85% 70%, rgba(61,219,184,0.1) 0%, transparent 50%);
 }
- 
+
 /* HEADER */
 header {
   background: var(--white);
@@ -58,7 +57,7 @@ header {
 .dot.on { background:var(--mint); box-shadow:0 0 6px var(--mint); animation:pulse 2s infinite; }
 .dot.err { background:var(--coral); }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
- 
+
 /* TABS NAV */
 .nav-tabs {
   display:flex; background:var(--white);
@@ -74,24 +73,24 @@ header {
   letter-spacing:0.03em;
 }
 .nav-tab.active { color:var(--pink); border-bottom-color:var(--pink); }
- 
+
 /* SCROLL */
 .scroll { overflow-y:auto; height:calc(100vh - 106px); }
 .page { display:none; }
 .page.active { display:block; }
- 
+
 /* SECTION */
 .section { background:var(--white); border-radius:20px; margin:10px; padding:14px; box-shadow:var(--shadow); border:1.5px solid var(--border); }
 .sec-title { font-family:'Fredoka',sans-serif; font-size:13px; font-weight:500; color:var(--text2); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
 .sec-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
- 
+
 /* MOMENT CARD */
 .moment-card { background:linear-gradient(135deg,var(--pink),var(--purple)); border-radius:16px; padding:14px; color:white; margin-bottom:12px; position:relative; overflow:hidden; }
 .moment-card::before { content:''; position:absolute; top:-20px; right:-20px; width:90px; height:90px; background:rgba(255,255,255,0.1); border-radius:50%; }
 .mc-period { font-size:10px; font-weight:800; letter-spacing:0.15em; text-transform:uppercase; opacity:0.85; margin-bottom:3px; }
 .mc-title { font-family:'Fredoka',sans-serif; font-size:19px; font-weight:500; margin-bottom:2px; }
 .mc-sub { font-size:11px; opacity:0.8; }
- 
+
 /* INPUTS */
 input, textarea, select {
   width:100%; background:var(--bg); border:2px solid var(--border);
@@ -102,7 +101,7 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus { border-color:var(--pink); box-shadow:0 0 0 3px rgba(255,110,180,0.08); }
 textarea { resize:none; min-height:80px; line-height:1.6; }
 textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400; }
- 
+
 /* BUTTONS */
 .btn { font-family:'Fredoka',sans-serif; font-size:14px; font-weight:500; padding:10px 16px; border-radius:12px; border:none; cursor:pointer; transition:all 0.2s; display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
 .btn:active { transform:scale(0.97); }
@@ -118,13 +117,13 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .btn-xs { padding:4px 10px; font-size:11px; border-radius:8px; }
 .btn-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
 .btn-full { width:100%; }
- 
+
 /* CONVERTED */
 .converted-box { display:none; background:linear-gradient(135deg,var(--purple-light),var(--blue-light)); border:2px solid var(--purple); border-radius:12px; padding:12px; margin-top:10px; }
 .conv-label { font-size:10px; font-weight:800; letter-spacing:0.2em; color:var(--purple); text-transform:uppercase; margin-bottom:5px; font-family:'Fredoka',sans-serif; }
 .conv-text { font-size:12px; color:var(--text); line-height:1.6; font-style:italic; }
 .converting-ind { display:none; align-items:center; gap:8px; font-size:12px; color:var(--purple); padding:8px 0; font-weight:700; }
- 
+
 /* SUGGESTIONS */
 .sug-list { display:flex; flex-direction:column; gap:7px; }
 .sug-chip { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg); border:2px solid var(--border); border-radius:12px; cursor:pointer; transition:all 0.2s; }
@@ -132,31 +131,31 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .sug-ic { font-size:20px; flex-shrink:0; }
 .sug-txt { flex:1; font-size:13px; line-height:1.4; font-weight:600; }
 .sug-use { font-size:10px; font-weight:800; background:linear-gradient(135deg,var(--pink),var(--purple)); color:white; padding:3px 9px; border-radius:8px; flex-shrink:0; font-family:'Fredoka',sans-serif; }
- 
+
 /* ── GRADE DO DIA ── */
 .grade-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
 .grade-date { font-family:'Fredoka',sans-serif; font-size:16px; color:var(--purple); }
- 
+
 /* ADD HORÁRIO FORM */
 .add-slot-form { background:var(--purple-light); border:2px solid var(--purple); border-radius:16px; padding:14px; margin-bottom:14px; display:none; }
 .add-slot-form.open { display:block; }
 .form-row { display:flex; gap:8px; margin-bottom:8px; }
 .form-row input, .form-row select { flex:1; }
 .time-input { max-width:120px; }
- 
+
 /* TIMELINE */
 .timeline { display:flex; flex-direction:column; gap:0; position:relative; }
 .timeline::before { content:''; position:absolute; left:44px; top:0; bottom:0; width:2px; background:linear-gradient(180deg,var(--pink-light),var(--purple-light)); z-index:0; }
- 
+
 .slot-item {
   display:flex; gap:0; align-items:flex-start;
   position:relative; z-index:1; margin-bottom:4px;
 }
- 
+
 .slot-time-col { width:44px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; padding-top:10px; }
 .slot-time-text { font-size:11px; font-weight:800; color:var(--text2); font-family:'Fredoka',sans-serif; line-height:1; }
 .slot-dot-outer { width:14px; height:14px; border-radius:50%; border:2px solid var(--white); margin-top:4px; flex-shrink:0; }
- 
+
 .slot-card {
   flex:1; margin-left:10px;
   background:var(--white); border:2px solid var(--border);
@@ -168,7 +167,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .slot-card.active-now { border-color:var(--pink); background:var(--pink-light); box-shadow:0 4px 16px rgba(255,110,180,0.2); }
 .slot-card.done-slot { border-color:var(--mint); background:var(--mint-light); opacity:0.75; }
 .slot-card.upcoming { opacity:0.7; }
- 
+
 .slot-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
 .slot-label { font-size:13px; font-weight:700; flex:1; }
 .slot-badge { font-size:10px; font-weight:800; padding:2px 8px; border-radius:8px; font-family:'Fredoka',sans-serif; white-space:nowrap; }
@@ -176,10 +175,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .sb-done { background:var(--mint-light); color:#009970; }
 .sb-upcoming { background:var(--yellow-light); color:#b87a00; }
 .sb-generating { background:var(--purple-light); color:var(--purple); }
- 
+
 .slot-desc { font-size:11px; color:var(--text2); line-height:1.5; }
 .slot-actions { display:flex; gap:6px; margin-top:8px; }
- 
+
 /* QUEUE */
 .queue-grid { display:flex; flex-direction:column; gap:10px; }
 .scene-card { background:var(--white); border:2px solid var(--border); border-radius:16px; overflow:hidden; cursor:pointer; transition:all 0.2s; box-shadow:0 2px 8px rgba(180,100,200,0.06); }
@@ -204,7 +203,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .b-done { background:var(--mint-light); color:#009970; }
 .b-reused { background:var(--blue-light); color:#0066aa; }
 .b-error { background:var(--coral-light); color:#cc3300; }
- 
+
 /* SUMMARY */
 .sum-card { border-radius:14px; padding:14px; margin-bottom:10px; border:2px solid transparent; }
 .sum-card.pink { background:var(--pink-light); border-color:rgba(255,110,180,0.3); }
@@ -213,7 +212,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .sum-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
 .sum-list li { font-size:12px; display:flex; gap:6px; line-height:1.5; font-weight:600; }
 .sum-list li::before { content:'✦'; color:var(--pink); flex-shrink:0; font-size:10px; margin-top:2px; }
- 
+
 /* HISTORY */
 .search-wrap { position:relative; margin-bottom:12px; }
 .search-wrap input { padding-left:34px; }
@@ -227,7 +226,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .he-tags { display:flex; flex-wrap:wrap; gap:3px; }
 .he-tag { font-size:10px; padding:2px 7px; background:var(--bg); border:1.5px solid var(--border); border-radius:8px; color:var(--text2); font-weight:700; }
 .he-tag.hl { border-color:var(--pink); color:var(--pink); background:var(--pink-light); }
- 
+
 /* MODAL */
 .overlay { position:fixed; inset:0; background:rgba(45,32,64,0.7); display:none; align-items:flex-end; justify-content:center; z-index:1000; backdrop-filter:blur(6px); }
 .overlay.open { display:flex; }
@@ -240,21 +239,21 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 .modal-meta { font-size:11px; color:var(--text2); margin-bottom:10px; font-weight:600; }
 .modal-prompt { background:var(--purple-light); border:2px solid rgba(181,123,238,0.3); border-radius:10px; padding:10px 12px; font-size:11px; font-style:italic; line-height:1.6; margin-bottom:14px; }
 .modal-actions { display:flex; gap:8px; flex-wrap:wrap; }
- 
+
 /* TOASTS */
 .toasts { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; z-index:9000; width:88%; max-width:300px; }
 .toast { background:var(--text); color:white; padding:10px 16px; border-radius:12px; font-size:12px; font-weight:700; text-align:center; animation:toastIn 0.3s ease; width:100%; font-family:'Fredoka',sans-serif; }
 .toast.ok { background:linear-gradient(135deg,var(--mint),var(--blue)); }
 .toast.err { background:linear-gradient(135deg,var(--coral),var(--pink)); }
 @keyframes toastIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
- 
+
 .spinner { width:16px; height:16px; border:3px solid var(--purple-light); border-top-color:var(--purple); border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
 @keyframes spin { to{transform:rotate(360deg)} }
- 
+
 .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:36px 20px; text-align:center; gap:10px; }
 .empty-icon { font-size:44px; }
 .empty-text { font-size:13px; color:var(--text2); line-height:1.6; max-width:220px; font-weight:600; }
- 
+
 /* DESKTOP LAYOUT */
 @media (min-width: 768px) {
   header { padding: 12px 32px; }
@@ -271,24 +270,24 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 }
 /* FORCE CLICKS */
 .nav-tab, .btn, .sug-chip { cursor: pointer !important; user-select:none; -webkit-user-select:none; }
- 
- 
+
+
 /* SETTINGS */
 .settings-row { display:flex; flex-direction:column; gap:10px; }
 .settings-row label { font-size:12px; font-weight:700; color:var(--text2); margin-bottom:4px; display:block; font-family:'Fredoka',sans-serif; letter-spacing:0.05em; }
 </style>
 </head>
 <body>
- 
+
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v3.8</div>
+    <div class="version-badge">v3.9</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
 </header>
- 
+
 <div class="nav-tabs">
   <div class="nav-tab active" onclick="navTo('grade')">📅 Grade</div>
   <div class="nav-tab" onclick="navTo('cena')">✍️ Cena</div>
@@ -296,24 +295,24 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
   <div class="nav-tab" onclick="navTo('historico')">📋 Histórico</div>
   <div class="nav-tab" onclick="navTo('config')">⚙️ Config</div>
 </div>
- 
+
 <div class="scroll">
- 
+
 <!-- ════════ GRADE DO DIA ════════ -->
 <div class="page active" id="page-grade">
- 
+
   <div class="section">
     <div class="moment-card" id="momentCard">
       <div class="mc-period" id="mcPeriod">—</div>
       <div class="mc-title" id="mcTitle">Carregando...</div>
       <div class="mc-sub" id="mcSub">—</div>
     </div>
- 
+
     <div class="grade-header">
       <div class="grade-date" id="gradeDate">—</div>
       <button class="btn btn-pink btn-sm" onclick="toggleAddForm()">+ Horário</button>
     </div>
- 
+
     <!-- FORM ADICIONAR SLOT -->
     <div class="add-slot-form" id="addSlotForm">
       <div class="sec-title" style="margin-bottom:10px"><div class="sec-dot" style="background:var(--purple)"></div>Novo Horário</div>
@@ -334,7 +333,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <button class="btn btn-purple btn-sm" style="flex:2" onclick="addSlot()">✦ Adicionar à Grade</button>
       </div>
     </div>
- 
+
     <!-- TIMELINE -->
     <div class="timeline" id="timeline">
       <div class="empty-state">
@@ -342,29 +341,29 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <div class="empty-text">Toque em "+ Horário" para montar a grade do seu dia!</div>
       </div>
     </div>
- 
+
     <div class="btn-row" style="margin-top:14px" id="gradeActions" style="display:none">
       <button class="btn btn-mint btn-sm btn-full" onclick="startGrade()">▶ Ativar Grade Automática</button>
     </div>
   </div>
- 
+
 </div>
- 
+
 <!-- ════════ NOVA CENA MANUAL ════════ -->
- 
+
 <div class="page" id="page-cena">
- 
+
   <div class="section">
     <div class="moment-card" id="momentCard2">
       <div class="mc-period" id="mcPeriod2">—</div>
       <div class="mc-title" id="mcTitle2">—</div>
       <div class="mc-sub" id="mcSub2">—</div>
     </div>
- 
+
     <div class="sec-title"><div class="sec-dot" style="background:var(--purple)"></div>O que você está fazendo agora?</div>
- 
+
     <textarea id="freeInput" placeholder="Ex: tô deitada no sofá vendo série com o notebook no colo..."></textarea>
- 
+
     <div class="converting-ind" id="convInd">
       <div class="spinner"></div>
       <span>Convertendo para prompt cinematográfico...</span>
@@ -373,7 +372,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <div class="conv-label">✦ Prompt para o Runway</div>
       <div class="conv-text" id="convText"></div>
     </div>
- 
+
     <div class="btn-row" style="margin-top:10px">
       <select id="charSel" style="flex:1;min-width:130px">
         <option value="mini_fran">👱‍♀️ Mini Fran</option>
@@ -386,16 +385,16 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
       <button class="btn btn-pink" style="flex:1" onclick="addSceneManual()">+ Adicionar Cena</button>
     </div>
   </div>
- 
+
   <div class="section">
     <div class="sec-title"><div class="sec-dot" style="background:var(--mint)"></div>Sugestões para agora</div>
     <div class="sug-list" id="sugList"></div>
   </div>
- 
+
 </div>
- 
+
 <!-- ════════ FILA ════════ -->
- 
+
 <div class="page" id="page-fila">
   <div class="section">
     <div class="sec-title" style="justify-content:space-between">
@@ -408,9 +407,9 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <div class="queue-grid" id="grid"></div>
   </div>
 </div>
- 
+
 <!-- ════════ HISTÓRICO ════════ -->
- 
+
 <div class="page" id="page-historico">
   <div class="section">
     <div class="sec-title"><div class="sec-dot" style="background:var(--blue)"></div>Resumo de Hoje</div>
@@ -422,9 +421,9 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <div id="historyBox"></div>
   </div>
 </div>
- 
+
 <!-- ════════ CONFIG ════════ -->
- 
+
 <div class="page" id="page-config">
   <div class="section">
     <div class="sec-title"><div class="sec-dot" style="background:var(--coral)"></div>Runway API Key</div>
@@ -456,11 +455,11 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%" onclick="exportData()">↓ Exportar histórico</button>
   </div>
 </div>
- 
+
 </div>
- 
+
 </div><!-- end scroll -->
- 
+
 <!-- MODAL PREVIEW -->
 <div class="overlay" id="modal">
   <div class="modal">
@@ -480,15 +479,15 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     </div>
   </div>
 </div>
- 
+
 <div class="toasts" id="toasts"></div>
- 
+
 <script>
 const VER = 'Live Life v3.1';
- 
+
 // ─── STATE ───
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
- 
+
 const S = {
   key: localStorage.getItem('rw_key') || RUNWAY_KEY,
   scenes: JSON.parse(localStorage.getItem('rw_scenes3') || '[]'),
@@ -500,9 +499,9 @@ const S = {
   convertedPrompt: '',
   gradeTimer: null,
 };
- 
+
 const THUMBS = ['thumb-pink','thumb-mint','thumb-yellow','thumb-blue','thumb-purple'];
- 
+
 // ─── INIT ───
 function init() {
   // Salva chave automaticamente se não estava salva
@@ -528,7 +527,7 @@ function init() {
   setInterval(renderSuggestions, 60000);
   setInterval(checkGrade, 30000);
 }
- 
+
 // ─── CLOCK ───
 function startClock() {
   const tick = () => {
@@ -543,7 +542,7 @@ function startClock() {
   };
   tick(); setInterval(tick, 1000);
 }
- 
+
 // ─── PERIOD ───
 function getPeriod(h) {
   if (h>=5&&h<9) return 'amanhecer';
@@ -554,7 +553,7 @@ function getPeriod(h) {
   if (h>=21||h<1) return 'noite alta';
   return 'madrugada';
 }
- 
+
 const PERIODS = {
   'amanhecer':{ emoji:'🌅', label:'AMANHECER', title:'Acordando devagar...', sub:'a Mini Fran também está acordando', gradient:'linear-gradient(135deg,#ff9a56,#ffb347)', sugs:[{ic:'🌅',t:'Acordar e se espreguiçar na cama'},{ic:'🪥',t:'Escovar os dentes no banheiro'},{ic:'☕',t:'Preparar o café da manhã'},{ic:'🚿',t:'Tomar banho rápido'}] },
   'manhã':{ emoji:'☀️', label:'MANHÃ', title:'Manhã em andamento', sub:'a Mini Fran está na rotina matinal', gradient:'linear-gradient(135deg,#ff6eb4,#b57bee)', sugs:[{ic:'☕',t:'Tomar café lendo o celular no sofá'},{ic:'💻',t:'Trabalhar no notebook em home office'},{ic:'🏋️',t:'Fazer exercícios em casa'},{ic:'📚',t:'Estudar inglês com livros na mesa'}] },
@@ -564,7 +563,7 @@ const PERIODS = {
   'noite alta':{ emoji:'🌙', label:'NOITE ALTA', title:'Quase dormindo...', sub:'a Mini Fran está se preparando para dormir', gradient:'linear-gradient(135deg,#6b4f8e,#b57bee)', sugs:[{ic:'📖',t:'Ler na cama antes de dormir'},{ic:'🧴',t:'Ritual noturno — passar creme'},{ic:'🌙',t:'Apagar a luz e dormir'},{ic:'🎧',t:'Ouvir música relaxante na cama'}] },
   'madrugada':{ emoji:'🌌', label:'MADRUGADA', title:'Todo mundo dormindo', sub:'a Mini Fran está dormindo', gradient:'linear-gradient(135deg,#2d2040,#6b4f8e)', sugs:[{ic:'😴',t:'Dormindo na cama'},{ic:'🌌',t:'Vista noturna da janela'}] },
 };
- 
+
 function updateMoment() {
   const h = new Date().getHours();
   const p = getPeriod(h);
@@ -580,7 +579,7 @@ function updateMoment() {
     if (ms) ms.textContent = d.sub;
   });
 }
- 
+
 function renderSuggestions() {
   const h = new Date().getHours();
   const sugs = PERIODS[getPeriod(h)].sugs;
@@ -593,7 +592,7 @@ function renderSuggestions() {
       <span class="sug-use">usar</span>
     </div>`).join('');
 }
- 
+
 function useSug(txt) {
   document.getElementById('freeInput').value = txt;
   document.getElementById('convBox').style.display = 'none';
@@ -601,7 +600,7 @@ function useSug(txt) {
   navTo('cena');
   toast('Sugestão carregada! 🎬');
 }
- 
+
 // ─── GRADE DO DIA ───
 function toggleAddForm() {
   const f = document.getElementById('addSlotForm');
@@ -613,15 +612,15 @@ function toggleAddForm() {
     document.getElementById('slotLabel').focus();
   }
 }
- 
+
 function addSlot() {
   const time = document.getElementById('slotTime').value;
   const label = document.getElementById('slotLabel').value.trim();
   const desc = document.getElementById('slotDesc').value.trim();
   const char = document.getElementById('slotChar').value;
- 
+
   if (!time || !label) { toast('Preencha o horário e o nome!', 'err'); return; }
- 
+
   const slot = {
     id: 'slot_'+Date.now(),
     time, label, desc: desc||label, char,
@@ -629,20 +628,20 @@ function addSlot() {
     sceneId: null,
     triggered: false,
   };
- 
+
   S.slots.push(slot);
   S.slots.sort((a,b) => a.time.localeCompare(b.time));
   saveSlots();
- 
+
   document.getElementById('slotTime').value = '';
   document.getElementById('slotLabel').value = '';
   document.getElementById('slotDesc').value = '';
   document.getElementById('addSlotForm').classList.remove('open');
- 
+
   renderTimeline();
   toast('✦ Horário adicionado à grade!', 'ok');
 }
- 
+
 function renderTimeline() {
   const el = document.getElementById('timeline');
   if (!S.slots.length) {
@@ -650,28 +649,28 @@ function renderTimeline() {
     document.getElementById('gradeActions').style.display = 'none';
     return;
   }
- 
+
   document.getElementById('gradeActions').style.display = 'flex';
- 
+
   const nowStr = getCurrentTimeStr();
- 
+
   el.innerHTML = S.slots.map(slot => {
     const isPast = slot.time < nowStr;
     const isNow = isSlotNow(slot);
     const dotColor = slot.status==='done' ? 'var(--mint)' : isNow ? 'var(--pink)' : 'var(--purple-light)';
- 
+
     let cardClass = 'slot-card';
     if (isNow) cardClass += ' active-now';
     else if (slot.status==='done') cardClass += ' done-slot';
     else if (!isPast) cardClass += ' upcoming';
- 
+
     let badge = '';
     if (isNow && slot.status!=='done') badge = `<span class="slot-badge sb-now">🔴 AGORA</span>`;
     else if (slot.status==='done') badge = `<span class="slot-badge sb-done">✅ pronto</span>`;
     else if (slot.status==='generating') badge = `<span class="slot-badge sb-generating">✨ gerando</span>`;
     else if (!isPast) badge = `<span class="slot-badge sb-upcoming">⏰ ${slot.time}</span>`;
     else badge = `<span class="slot-badge sb-done" style="opacity:0.5">passou</span>`;
- 
+
     return `<div class="slot-item">
       <div class="slot-time-col">
         <div class="slot-time-text">${slot.time}</div>
@@ -691,35 +690,35 @@ function renderTimeline() {
     </div>`;
   }).join('');
 }
- 
+
 function getCurrentTimeStr() {
   const n = new Date();
   return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
 }
- 
+
 function isSlotNow(slot) {
   const nowStr = getCurrentTimeStr();
   const slotMins = timeToMins(slot.time);
   const nowMins = timeToMins(nowStr);
   return Math.abs(slotMins - nowMins) <= 5; // janela de 5 min
 }
- 
+
 function timeToMins(t) {
   const [h,m] = t.split(':').map(Number);
   return h*60+m;
 }
- 
+
 // CHECA GRADE AUTOMATICAMENTE
 function checkGrade() {
   if (!S.key) return;
   const nowStr = getCurrentTimeStr();
   const nowMins = timeToMins(nowStr);
- 
+
   S.slots.forEach(slot => {
     if (slot.triggered || slot.status==='done' || slot.status==='generating') return;
     const slotMins = timeToMins(slot.time);
     const diff = nowMins - slotMins;
- 
+
     if (diff >= 0 && diff <= 10) { // dentro de 10 min após o horário
       slot.triggered = true;
       slot.status = 'generating';
@@ -730,7 +729,7 @@ function checkGrade() {
     }
   });
 }
- 
+
 async function triggerSlotNow(slotId) {
   const slot = S.slots.find(s=>s.id===slotId);
   if (!slot) return;
@@ -741,10 +740,10 @@ async function triggerSlotNow(slotId) {
   toast(msg, 'ok');
   await triggerSlot(slot);
 }
- 
+
 async function triggerSlot(slot) {
   const prompt = buildPrompt(slot.desc, slot.char);
- 
+
   const scene = {
     id: 'sc_'+Date.now(),
     freeText: slot.label,
@@ -760,12 +759,12 @@ async function triggerSlot(slot) {
     thumbColor: THUMBS[Math.floor(Math.random()*THUMBS.length)],
     fromSlot: slot.id,
   };
- 
+
   slot.sceneId = scene.id;
   S.scenes.unshift(scene);
   save(); saveSlots();
   renderGrid();
- 
+
   // Se não tem API key, gera prévia local
   if (!S.key) {
     await sleep(1200);
@@ -778,13 +777,13 @@ async function triggerSlot(slot) {
     toast('🎨 Prévia: '+slot.label,'ok');
     return;
   }
- 
+
   // Com API key: via Netlify Function
   try {
     const res = await fetch('/.netlify/functions/runway', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, model: 'gen4_turbo', ratio: '1280:720', duration: 5 } })
+      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: prompt, model: 'gen3a_turbo', duration: 5 } })
     });
     if (!res.ok) { const e=await res.json(); throw new Error(JSON.stringify(e)); }
     const data = await res.json();
@@ -797,7 +796,7 @@ async function triggerSlot(slot) {
     toast('Erro: '+e.message,'err');
   }
 }
- 
+
 function buildPrompt(desc, char) {
   const charDescs = {
     mini_fran: S.charDesc,
@@ -808,19 +807,19 @@ function buildPrompt(desc, char) {
   const lightMap = {'amanhecer':'soft warm morning light','manhã':'bright natural light','almoço':'midday light','tarde':'golden afternoon light','noite':'warm indoor lighting','noite alta':'dim bedroom lighting','madrugada':'dark ambient light'};
   return `${charDescs[char]||charDescs.mini_fran}. ${desc}. ${lightMap[getPeriod(h)]}, cinematic lifestyle footage, warm tones, 4K quality.`;
 }
- 
+
 // ─── CENA MANUAL ───
 async function convertPrompt() {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
- 
+
   document.getElementById('convInd').style.display = 'flex';
   document.getElementById('convBox').style.display = 'none';
- 
+
   const char = document.getElementById('charSel').value;
   const h = new Date().getHours();
   const lightMap = {'amanhecer':'soft warm morning light','manhã':'bright natural morning light','almoço':'midday light','tarde':'golden afternoon light','noite':'warm indoor lighting','noite alta':'dim bedroom lighting','madrugada':'dark night light'};
- 
+
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
@@ -828,11 +827,11 @@ async function convertPrompt() {
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514', max_tokens:250,
         messages:[{role:'user', content:`Convert this casual Brazilian Portuguese description into a 2-sentence cinematic Runway AI video prompt in English.
- 
+
 Character: ${S.charDesc}
 Lighting: ${lightMap[getPeriod(h)]}
 Description: "${free}"
- 
+
 Reply with ONLY the prompt text.`}]
       })
     });
@@ -848,13 +847,13 @@ Reply with ONLY the prompt text.`}]
     document.getElementById('convInd').style.display = 'none';
   }
 }
- 
+
 function addSceneManual() {
   const free = document.getElementById('freeInput').value.trim();
   if (!free) { toast('Escreva o que está fazendo!', 'err'); return; }
   const char = document.getElementById('charSel').value;
   const now = new Date();
- 
+
   const scene = {
     id:'sc_'+Date.now(),
     freeText:free,
@@ -867,7 +866,7 @@ function addSceneManual() {
     weekLabel:getWeekLabel(now),
     thumbColor:THUMBS[Math.floor(Math.random()*THUMBS.length)],
   };
- 
+
   S.scenes.unshift(scene);
   save();
   document.getElementById('freeInput').value='';
@@ -877,7 +876,7 @@ function addSceneManual() {
   toast('🎬 Cena adicionada!', 'ok');
   navTo('fila');
 }
- 
+
 // ─── GENERATE ───
 async function generateAll() {
   const pending = S.scenes.filter(s=>s.status==='pending');
@@ -886,16 +885,16 @@ async function generateAll() {
   toast(msg);
   for (const s of pending) { await generateScene(s); await sleep(800); }
 }
- 
+
 async function genSingle() {
   const scene = S.scenes.find(s=>s.id===S.activeModal); if(!scene)return;
   closeModal();
   await generateScene(scene);
 }
- 
+
 async function generateScene(scene) {
   scene.status='generating'; scene.progress=5; save(); renderGrid();
- 
+
   // Se não tem API key, gera prévia local
   if (!S.key) {
     await sleep(1200);
@@ -907,13 +906,13 @@ async function generateScene(scene) {
     toast('🎨 Prévia criada (configure Runway para vídeo real)','ok');
     return;
   }
- 
+
   // Com API key: via Netlify Function (evita CORS)
   try {
     const res = await fetch('/.netlify/functions/runway', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: scene.prompt, model: 'gen4_turbo', ratio: '1280:720', duration: 5 } })
+      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: { promptText: scene.prompt, model: 'gen3a_turbo', duration: 5 } })
     });
     if(!res.ok){const e=await res.json();throw new Error(JSON.stringify(e));}
     const data=await res.json();
@@ -925,7 +924,7 @@ async function generateScene(scene) {
     toast('Erro Runway: '+e.message,'err');
   }
 }
- 
+
 async function pollScene(scene, slot) {
   for (let i=0;i<60;i++) {
     await sleep(5000);
@@ -948,10 +947,10 @@ async function pollScene(scene, slot) {
     } catch(e){ if(i>=59){scene.status='error';save();renderGrid();toast('Timeout Runway','err');} }
   }
 }
- 
+
 function generateLocalPreview(text, char, period) {
   const t = text.toLowerCase();
- 
+
   // Detecta ambiente e tema
   const themes = [
     { keys:['academia','treinar','exerc','muscula','correr'], emoji:'🏋️', cor1:'#FF6B6B', cor2:'#FF8E53', amb:'Academia', luz:'Luz natural intensa', emoc:'Energia e determinação' },
@@ -967,7 +966,7 @@ function generateLocalPreview(text, char, period) {
     { keys:['skincare','creme','pele','rosto','espelho'], emoji:'🧴', cor1:'#FCCB90', cor2:'#D57EEB', amb:'Banheiro iluminado', luz:'Luz branca de espelho', emoc:'Cuidado e autocuidado' },
     { keys:['maquiag','batom','cabelo'], emoji:'💄', cor1:'#FF9A9E', cor2:'#FAD0C4', amb:'Penteadeira', luz:'Luz quente e glamourosa', emoc:'Confiança e beleza' },
   ];
- 
+
   const periodThemes = {
     'amanhecer':{ emoji:'🌅', cor1:'#FFBE76', cor2:'#FF7979', amb:'Quarto ao amanhecer', luz:'Primeira luz do dia', emoc:'Início e esperança' },
     'manhã':{ emoji:'☀️', cor1:'#F9CA24', cor2:'#F0932B', amb:'Casa iluminada', luz:'Luz solar da manhã', emoc:'Disposição e energia' },
@@ -977,19 +976,19 @@ function generateLocalPreview(text, char, period) {
     'noite alta':{ emoji:'🌙', cor1:'#6C5CE7', cor2:'#A29BFE', amb:'Quarto à noite', luz:'Luz suave e íntima', emoc:'Sonolência e paz' },
     'madrugada':{ emoji:'🌌', cor1:'#2D3561', cor2:'#6C5CE7', amb:'Casa em silêncio', luz:'Escuridão com luz suave', emoc:'Repouso profundo' },
   };
- 
+
   // Tenta detectar tema pelo texto
   for (const th of themes) {
     if (th.keys.some(k => t.includes(k))) {
       return { titulo:text.substring(0,40), descricao:`${char==='mini_fran'?'Mini Fran':'Personagem'} ${text}. A cena captura um momento autêntico do cotidiano com estética cinematográfica.`, ambiente:th.amb, iluminacao:th.luz, emocao:th.emoc, cor_dominante:th.cor1, cor_secundaria:th.cor2, emoji_cena:th.emoji };
     }
   }
- 
+
   // Fallback pelo período do dia
   const pt = periodThemes[period] || periodThemes['manhã'];
   return { titulo:text.substring(0,40), descricao:`${char==='mini_fran'?'Mini Fran':'Personagem'} ${text}. Um momento do cotidiano capturado com estética cinematográfica e luz natural.`, ambiente:pt.amb, iluminacao:pt.luz, emocao:pt.emoc, cor_dominante:pt.cor1, cor_secundaria:pt.cor2, emoji_cena:pt.emoji };
 }
- 
+
 async function pollScene(scene, slot) {
   for (let i=0;i<60;i++) {
     await sleep(5000);
@@ -1008,7 +1007,7 @@ async function pollScene(scene, slot) {
     } catch(e){ if(i>=59){scene.status='error';save();renderGrid();} }
   }
 }
- 
+
 // ─── RENDER GRID ───
 function renderGrid() {
   const grid=document.getElementById('grid');
@@ -1044,9 +1043,9 @@ function renderGrid() {
     </div>`;
   }).join('');
 }
- 
+
 function clearDone(){S.scenes=S.scenes.filter(s=>s.status!=='done');save();renderGrid();renderSummary();toast('Cenas prontas removidas!');}
- 
+
 // ─── SUMMARY ───
 function renderSummary() {
   const el=document.getElementById('summaryBox');
@@ -1068,7 +1067,7 @@ function renderSummary() {
     </div>
     ${done.length?`<div class="sum-card mint"><div class="sum-title">✅ Concluídas</div><ul class="sum-list">${done.map(s=>`<li>${s.timeLabel} — ${s.freeText.substring(0,38)}${s.freeText.length>38?'…':''}</li>`).join('')}</ul></div>`:''}`;
 }
- 
+
 // ─── HISTORY ───
 function renderHistory() {
   const q=document.getElementById('histSearch').value.toLowerCase();
@@ -1091,7 +1090,7 @@ function renderHistory() {
       }).join('')}
     </div>`).join('');
 }
- 
+
 // ─── SLOT MODAL (inline) ───
 function openSlotModal(slotId) {
   const slot = S.slots.find(s=>s.id===slotId);
@@ -1101,15 +1100,15 @@ function openSlotModal(slotId) {
   document.getElementById('modalTitle').textContent = `${slot.time} — ${slot.label}`;
   document.getElementById('modalMeta').textContent = `Personagem: ${slot.char} · Status: ${slot.status}`;
   document.getElementById('modalPrompt').textContent = slot.desc;
- 
+
   // Checar se tem cena gerada
   const scene = slot.sceneId ? S.scenes.find(s=>s.id===slot.sceneId) : null;
   const vid = document.getElementById('modalVid');
   vid.innerHTML = (scene && scene.videoUrl) ? `<video src="${scene.videoUrl}" controls autoplay loop style="width:100%;height:100%;object-fit:cover"></video>` : '🎬';
- 
+
   document.getElementById('modal').classList.add('open');
 }
- 
+
 // ─── MODAL ───
 function openModal(id) {
   const s=S.scenes.find(x=>x.id===id);if(!s)return;
@@ -1142,7 +1141,7 @@ function closeModal(){document.getElementById('modal').classList.remove('open');
 function reuseModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s)return;document.getElementById('freeInput').value=s.freeText;S.convertedPrompt=s.prompt;document.getElementById('convText').textContent=s.prompt;document.getElementById('convBox').style.display='block';closeModal();navTo('cena');toast('Cena carregada!');}
 function dlModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s||!s.videoUrl){toast('Vídeo não gerado ainda','err');return;}const a=document.createElement('a');a.href=s.videoUrl;a.download=`cena_${s.timeLabel.replace(':','-')}.mp4`;a.click();}
 function delModal(){S.scenes=S.scenes.filter(x=>x.id!==S.activeModal);save();closeModal();renderGrid();renderSummary();toast('Cena excluída!');}
- 
+
 // ─── NAV ───
 function navTo(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1162,7 +1161,7 @@ function navTo(name) {
     if (cd) cd.value = S.charDesc;
   }
 }
- 
+
 // ─── SETTINGS ───
 function saveKey(){const k=document.getElementById('apiInput').value.trim();if(!k||k.includes('•')){toast('Cole sua API key!','err');return;}S.key=k;localStorage.setItem('rw_key',k);document.getElementById('apiInput').value='••••••••••••••••';setDot(true);toast('🔌 Runway conectado!','ok');}
 function setDot(on){document.getElementById('apiDot').className='dot '+(on?'on':'err');document.getElementById('apiTxt').textContent=on?'on':'off';}
@@ -1171,16 +1170,16 @@ function clearGrade(){S.slots=[];saveSlots();renderTimeline();toast('Grade limpa
 function exportData(){const blob=new Blob([JSON.stringify({slots:S.slots,scenes:S.scenes},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`diretora_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;a.click();}
 function startGrade(){if(!S.key){toast('Configure a API key primeiro!','err');navTo('config');return;}toast('✅ Grade ativa! Os vídeos serão gerados automaticamente nos horários programados.','ok');}
 function deleteSlot(id){S.slots=S.slots.filter(s=>s.id!==id);saveSlots();renderTimeline();toast('Horário removido!');}
- 
+
 // ─── UTILS ───
 function save(){localStorage.setItem('rw_scenes3',JSON.stringify(S.scenes));}
 function saveSlots(){localStorage.setItem('rw_slots',JSON.stringify(S.slots));}
 function getWeekLabel(d){return `Semana ${Math.ceil(d.getDate()/7)} · ${d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}`;}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 function toast(msg,type=''){const el=document.createElement('div');el.className='toast '+(type==='ok'?'ok':type==='err'?'err':'');el.textContent=msg;document.getElementById('toasts').appendChild(el);setTimeout(()=>el.remove(),3000);}
- 
+
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
- 
+
 // Checa grade ao iniciar e a cada 30s
 init();
 setInterval(checkGrade, 30000);
