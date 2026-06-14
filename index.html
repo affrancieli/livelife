@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v4.6</title>
+<title>Live Life v4.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -282,7 +282,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v4.6</div>
+    <div class="version-badge">v4.7</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
   </div>
@@ -936,47 +936,99 @@ async function genSingle() {
   await generateScene(scene);
 }
 
+async function callRunway(path, method, body) {
+  const res = await fetch('/.netlify/functions/runway', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, method, body, apiKey: S.key })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
 async function generateScene(scene) {
-  scene.status='generating'; scene.progress=5; scene.startedAt=Date.now(); save(); renderGrid();
-  // Auto-refresh grid a cada segundo para atualizar o timer
+  scene.status='generating'; scene.progress=5; scene.startedAt=Date.now(); scene.errorMsg='';
+  save(); renderGrid();
   const timerInterval = setInterval(() => { if(scene.status==='generating') renderGrid(); else clearInterval(timerInterval); }, 1000);
 
-  // Se não tem API key, gera prévia local
+  // Sem API key — prévia local
   if (!S.key) {
     await sleep(1200);
-    scene.progress=60; save(); renderGrid();
-    await sleep(600);
     const preview = generateLocalPreview(scene.freeText, scene.char, scene.period);
     scene.status='done'; scene.progress=100; scene.preview=preview; scene.isPreview=true;
     save(); renderGrid(); renderSummary();
-    toast('🎨 Prévia criada (configure Runway para vídeo real)','ok');
+    toast('🎨 Prévia criada!','ok');
+    clearInterval(timerInterval);
     return;
   }
 
-  // Com API key: via Netlify Function (evita CORS)
   try {
-    const videoBody = {
+    let imageUrl = scene.photoBase64 || null;
+
+    // Se não tem foto, gera imagem primeiro
+    if (!imageUrl) {
+      toast('🖼 Gerando imagem base...');
+      scene.progress = 10; save(); renderGrid();
+
+      const imgTask = await callRunway('/text_to_image', 'POST', {
+        model: 'gen4_image',
+        promptText: scene.prompt,
+        ratio: '1280:720'
+      });
+
+      if (!imgTask.id) throw new Error('Falha ao criar task de imagem: ' + JSON.stringify(imgTask));
+
+      // Poll imagem (max 60s)
+      const imgStart = Date.now();
+      while (Date.now() - imgStart < 60000) {
+        await sleep(4000);
+        scene.progress = Math.min(35, 10 + ((Date.now()-imgStart)/60000)*25);
+        save(); renderGrid();
+        const poll = await callRunway('/tasks/' + imgTask.id, 'GET', null);
+        if (poll.status === 'SUCCEEDED') { imageUrl = poll.output[0]; break; }
+        if (poll.status === 'FAILED') throw new Error('Imagem falhou: ' + (poll.failure||'desconhecido'));
+      }
+      if (!imageUrl) throw new Error('Timeout na geração da imagem (60s)');
+      toast('✅ Imagem gerada! Criando vídeo...');
+    }
+
+    // Gera vídeo com a imagem
+    scene.progress = 40; save(); renderGrid();
+    const vidTask = await callRunway('/image_to_video', 'POST', {
+      model: 'gen4_turbo',
+      promptImage: imageUrl,
       promptText: scene.prompt,
       ratio: '1280:720',
       duration: 5
-    };
-    // Se tem foto do local, envia para usar como ambiente
-    if (scene.photoBase64) {
-      videoBody.promptImage = scene.photoBase64;
-    }
-    const res = await fetch('/.netlify/functions/runway', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path: '/image_to_video', method: 'POST', apiKey: S.key, body: videoBody })
     });
-    if(!res.ok){const e=await res.json();throw new Error(JSON.stringify(e));}
-    const data=await res.json();
-    if(data.error){throw new Error(JSON.stringify(data));}
-    scene.taskId=data.id; save();
-    await pollScene(scene, null);
+
+    if (!vidTask.id) throw new Error('Falha ao criar task de vídeo: ' + JSON.stringify(vidTask));
+    scene.taskId = vidTask.id; save();
+
+    // Poll vídeo (max 90s)
+    const vidStart = Date.now();
+    while (Date.now() - vidStart < 90000) {
+      await sleep(5000);
+      scene.progress = Math.min(95, 40 + ((Date.now()-vidStart)/90000)*55);
+      save(); renderGrid();
+      const poll = await callRunway('/tasks/' + vidTask.id, 'GET', null);
+      if (poll.status === 'SUCCEEDED') {
+        scene.status='done'; scene.videoUrl=poll.output[0]; scene.progress=100;
+        save(); renderGrid(); renderSummary();
+        toast('🎬 Vídeo pronto!','ok');
+        clearInterval(timerInterval);
+        return;
+      }
+      if (poll.status === 'FAILED') throw new Error('Vídeo falhou: ' + (poll.failure||poll.failureCode||'desconhecido'));
+    }
+    throw new Error('Timeout no vídeo (90s) — tente novamente');
+
   } catch(e) {
-    scene.status='error'; save(); renderGrid();
-    toast('Erro Runway: '+e.message,'err');
+    scene.status='error'; scene.errorMsg=e.message;
+    save(); renderGrid();
+    toast('❌ '+e.message,'err');
+    clearInterval(timerInterval);
   }
 }
 
