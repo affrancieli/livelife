@@ -20,7 +20,7 @@ const path = require('path');
 //  ⚙️  CONFIGURAÇÃO
 // ──────────────────────────────────────────────────────
 const CONFIG = {
-  youtubeStreamKey: '6t3h-dfex-jj5y-sbzt-22jh',
+  youtubeStreamKey: 'e8xr-5xtz-x6ra-0361-77f4',
   videosDir: path.join(process.env.HOME, 'Desktop', 'livelife-videos'),
   queueFile: path.join(process.env.HOME, 'Desktop', 'livelife-queue.json'),
   playlistFile: path.join(process.env.HOME, 'Desktop', 'livelife-playlist.txt'),
