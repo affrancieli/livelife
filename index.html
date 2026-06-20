@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.9.1</title>
+<title>Live Life v5.9.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,9 +232,10 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.9.1</div>
+    <div class="version-badge">v5.9.3</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
+    <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
   </div>
 </header>
 
@@ -515,7 +516,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.9.1';
+const VER = 'Live Life v5.9.3';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -543,9 +544,11 @@ function init() {
   if (S.key) { const inp = document.getElementById('apiInput'); if (inp) inp.value = '••••••••••••••••'; setDot(true); }
   startClock(); updateMoment(); renderSuggestions(); renderTimeline(); renderGrid();
   renderSummary(); renderCastList(); renderCustomSugs();
+  checkLocalServer();
   setInterval(updateMoment, 60000);
   setInterval(renderSuggestions, 60000);
   setInterval(checkGrade, 30000);
+  setInterval(checkLocalServer, 15000);
 }
 
 function startClock() {
@@ -923,6 +926,57 @@ async function callRunway(path, method, body) {
   }
 }
 
+// ── SYNC AUTOMÁTICO COM SERVIDOR LOCAL (stream para YouTube) ──
+const LOCAL_SERVER_URL = 'http://localhost:3000';
+let localServerOnline = null; // null=não checado, true/false=resultado
+
+async function checkLocalServer() {
+  try {
+    const res = await fetch(LOCAL_SERVER_URL + '/health', { signal: AbortSignal.timeout(2000) });
+    localServerOnline = res.ok;
+  } catch(e) {
+    localServerOnline = false;
+  }
+  updateServerDot();
+}
+
+function updateServerDot() {
+  const dot = document.getElementById('serverDot');
+  const txt = document.getElementById('serverTxt');
+  if (!dot) return;
+  dot.className = 'dot ' + (localServerOnline ? 'on' : 'err');
+  if (txt) txt.textContent = localServerOnline ? 'stream' : 'offline';
+}
+
+async function syncSceneToServer(scene) {
+  if (!scene.videoUrl) return; // só sincroniza cenas com vídeo pronto
+  try {
+    const res = await fetch(LOCAL_SERVER_URL + '/scene', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: scene.id,
+        freeText: scene.freeText,
+        videoUrl: scene.videoUrl,
+        status: scene.status,
+        timeLabel: scene.timeLabel,
+        dateLabel: scene.dateLabel,
+        airTime: scene.airTime || null,
+      }),
+      signal: AbortSignal.timeout(3000)
+    });
+    if (res.ok) {
+      localServerOnline = true;
+      updateServerDot();
+      console.log('✅ Cena sincronizada com o servidor local:', scene.id);
+    }
+  } catch(e) {
+    localServerOnline = false;
+    updateServerDot();
+    console.log('⚠️ Servidor local offline — cena não sincronizada (rode: node server.js)');
+  }
+}
+
 // ✅ FIX PRINCIPAL: truncatedPrompt declarado ANTES do if (!imageUrl)
 async function generateScene(scene, slot) {
   scene.status='generating'; scene.progress=5; scene.startedAt=Date.now(); scene.errorMsg='';
@@ -993,6 +1047,7 @@ async function generateScene(scene, slot) {
         if (slot) { slot.status='done'; saveSlots(); renderTimeline(); }
         save(); renderGrid(); renderSummary();
         toast('🎬 Vídeo pronto!','ok');
+        syncSceneToServer(scene);
         clearInterval(timerInterval);
         return;
       }
@@ -1103,6 +1158,7 @@ function reuseSceneDirect(id) {
     timeLabel:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
     dateLabel:now.toLocaleDateString('pt-BR'), weekLabel:getWeekLabel(now), airTime:null, progress:100 };
   S.scenes.unshift(copy); save(); renderGrid(); renderSummary();
+  syncSceneToServer(copy);
   toast('♻️ Cena reutilizada - sem gastar crédito!', 'ok');
 }
 
@@ -1261,7 +1317,28 @@ function renderCastList() {
   const el=document.getElementById('castList'); if(!el)return;
   const cast=S.cast||[];
   if (!cast.length){el.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text2);font-size:12px;font-weight:600">Nenhum personagem cadastrado.<br>Toque em + Adicionar!</div>`;return;}
-  el.innerHTML=cast.map(m=>`<div class="cast-card">${m.photo?`<img src="${m.photo}" class="cast-avatar"/>`:`<div class="cast-avatar-placeholder">${m.roleEmoji}</div>`}<div class="cast-info"><div class="cast-name">${m.name}</div><div class="cast-alias">@${m.alias}</div><div class="cast-role">${m.roleEmoji} ${m.roleLabel} · ${(m.photos||[]).length} foto(s)</div></div><button onclick="deleteCastMember('${m.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text2)">🗑</button></div>`).join('');
+  el.innerHTML=cast.map(m=>{
+    const fotos = (m.photos||[]);
+    const galeria = fotos.length > 1
+      ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+          ${fotos.map(p=>`<div style="position:relative">
+            <img src="${p.base64}" style="width:52px;height:52px;object-fit:cover;border-radius:8px;border:2px solid var(--purple-light)"/>
+            <div style="font-size:8px;text-align:center;color:var(--text2);font-weight:700;margin-top:2px;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.label}</div>
+          </div>`).join('')}
+        </div>` : '';
+    return `<div class="cast-card" style="flex-direction:column;align-items:flex-start">
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        ${m.photo?`<img src="${m.photo}" class="cast-avatar"/>`:`<div class="cast-avatar-placeholder">${m.roleEmoji}</div>`}
+        <div class="cast-info" style="flex:1">
+          <div class="cast-name">${m.name}</div>
+          <div class="cast-alias">@${m.alias}</div>
+          <div class="cast-role">${m.roleEmoji} ${m.roleLabel} · ${fotos.length} foto(s)</div>
+        </div>
+        <button onclick="deleteCastMember('${m.id}')" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text2)">🗑</button>
+      </div>
+      ${galeria}
+    </div>`;
+  }).join('');
 }
 
 function injectCastIntoPrompt(promptText, sceneText) {
