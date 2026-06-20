@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.8.4</title>
+<title>Live Life v5.9.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.9.4</div>
+    <div class="version-badge">v5.9.5</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
     <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
@@ -516,7 +516,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.9.4';
+const VER = 'Live Life v5.9.5';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -1107,7 +1107,48 @@ function renderGrid() {
     return;
   }
   const bm={pending:`<span class="badge b-pending">⏳ aguardando</span>`,generating:`<span class="badge b-generating">🎬 gerando</span>`,done:`<span class="badge b-done">✅ pronto</span>`,reused:`<span class="badge b-reused">♻️ reutilizado</span>`,error:`<span class="badge b-error">❌ erro</span>`};
-  grid.innerHTML=S.scenes.map(s=>{
+
+  // Agrupa as cenas por dia (dateLabel, formato DD/MM/AAAA)
+  const groups = {};
+  S.scenes.forEach(s => {
+    const key = s.dateLabel || 'Sem data';
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(s);
+  });
+
+  // Ordena os dias do mais recente para o mais antigo
+  const sortedDays = Object.keys(groups).sort((a, b) => {
+    const da = a.split('/').reverse().join('');
+    const db = b.split('/').reverse().join('');
+    return db.localeCompare(da);
+  });
+
+  const todayStr = new Date().toLocaleDateString('pt-BR');
+
+  grid.innerHTML = sortedDays.map(day => {
+    // Dentro do dia, ordena por horário programado (airTime) e
+    // depois por horário de criação (timeLabel) — fica na ordem
+    // cronológica real, igual vai tocar no stream.
+    const scenesOfDay = groups[day].slice().sort((a, b) => {
+      const ta = a.airTime || a.timeLabel || '';
+      const tb = b.airTime || b.timeLabel || '';
+      return ta.localeCompare(tb);
+    });
+
+    const isToday = day === todayStr;
+    const dayLabel = isToday ? `Hoje · ${day}` : day;
+
+    const cardsHtml = scenesOfDay.map(s => renderSceneCard(s, bm)).join('');
+
+    return `<div class="day-group-header" style="grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:18px 4px 10px;${sortedDays[0]===day?'margin-top:4px;':''}">
+        <div style="font-family:'Fredoka',sans-serif;font-size:14px;font-weight:600;color:${isToday?'var(--pink)':'var(--text2)'}">${isToday?'📅 ':'🗓 '}${dayLabel}</div>
+        <div style="flex:1;height:2px;background:${isToday?'var(--pink-light)':'var(--border)'}"></div>
+        <div style="font-size:11px;color:var(--text2);font-weight:700">${scenesOfDay.length} cena${scenesOfDay.length>1?'s':''}</div>
+      </div>${cardsHtml}`;
+  }).join('');
+}
+
+function renderSceneCard(s, bm) {
     let thumb='';
     if(s.status==='pending'){
       thumb = s.photoBase64
@@ -1143,7 +1184,6 @@ function renderGrid() {
         ${actionBtns}
       </div>
     </div>`;
-  }).join('');
 }
 
 function clearAll() {
