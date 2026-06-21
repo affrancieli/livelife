@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.9.5</title>
+<title>Live Life v5.9.6</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.9.5</div>
+    <div class="version-badge">v5.9.6</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
     <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
@@ -263,6 +263,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     <div class="add-slot-form" id="addSlotForm">
       <div class="sec-title" style="margin-bottom:10px"><div class="sec-dot" style="background:var(--purple)"></div>Novo Horário</div>
       <div class="form-row">
+        <input type="date" id="slotDate" style="flex:1.2" />
         <input type="time" id="slotTime" class="time-input" />
         <input type="text" id="slotLabel" placeholder="Ex: Ir à academia" style="flex:2" />
       </div>
@@ -516,7 +517,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.9.5';
+const VER = 'Live Life v5.9.6';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -673,19 +674,29 @@ function toggleAddForm() {
   if (f.classList.contains('open')) {
     const now = new Date();
     document.getElementById('slotTime').value = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+    // Input type="date" exige formato ISO (AAAA-MM-DD)
+    const isoDate = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+    document.getElementById('slotDate').value = isoDate;
     document.getElementById('slotLabel').focus();
   }
 }
 
 function addSlot() {
+  const dateISO = document.getElementById('slotDate').value;
   const time = document.getElementById('slotTime').value;
   const label = document.getElementById('slotLabel').value.trim();
   const desc = document.getElementById('slotDesc').value.trim();
   const char = document.getElementById('slotChar').value;
-  if (!time || !label) { toast('Preencha o horário e o nome!', 'err'); return; }
-  const slot = { id:'slot_'+Date.now(), time, label, desc:desc||label, char, status:'upcoming', sceneId:null, triggered:false };
+  if (!dateISO || !time || !label) { toast('Preencha a data, o horário e o nome!', 'err'); return; }
+
+  // Converte AAAA-MM-DD (formato do input date) para DD/MM/AAAA
+  // (formato usado no resto do app, igual dateLabel das cenas)
+  const [y, m, d] = dateISO.split('-');
+  const dateLabel = `${d}/${m}/${y}`;
+
+  const slot = { id:'slot_'+Date.now(), date: dateISO, dateLabel, time, label, desc:desc||label, char, status:'upcoming', sceneId:null, triggered:false };
   S.slots.push(slot);
-  S.slots.sort((a,b) => a.time.localeCompare(b.time));
+  S.slots.sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
   saveSlots();
   document.getElementById('slotTime').value = '';
   document.getElementById('slotLabel').value = '';
@@ -704,8 +715,12 @@ function renderTimeline() {
   }
   document.getElementById('gradeActions').style.display = 'flex';
   const nowStr = getCurrentTimeStr();
+  const todayISO = getTodayISODate();
   el.innerHTML = S.slots.map(slot => {
-    const isPast = slot.time < nowStr;
+    const slotDate = slot.date || todayISO;
+    const isFutureDay = slotDate > todayISO;
+    const isPastDay = slotDate < todayISO;
+    const isPast = isPastDay || (!isFutureDay && slot.time < nowStr);
     const isNow = isSlotNow(slot);
     const dotColor = slot.status==='done' ? 'var(--mint)' : isNow ? 'var(--pink)' : 'var(--purple-light)';
     let cardClass = 'slot-card';
@@ -716,6 +731,7 @@ function renderTimeline() {
     if (isNow && slot.status!=='done') badge = `<span class="slot-badge sb-now">🔴 AGORA</span>`;
     else if (slot.status==='done') badge = `<span class="slot-badge sb-done">✅ pronto</span>`;
     else if (slot.status==='generating') badge = `<span class="slot-badge sb-generating">⏳ gerando</span>`;
+    else if (isFutureDay) badge = `<span class="slot-badge sb-upcoming">📅 ${slot.dateLabel||slotDate} · ${slot.time}</span>`;
     else if (!isPast) badge = `<span class="slot-badge sb-upcoming">⏰ ${slot.time}</span>`;
     else badge = `<span class="slot-badge sb-done" style="opacity:0.5">passou</span>`;
     return `<div class="slot-item">
@@ -737,7 +753,14 @@ function getCurrentTimeStr() {
   return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
 }
 
+function getTodayISODate() {
+  const n = new Date();
+  return n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0');
+}
+
 function isSlotNow(slot) {
+  // Slots de outros dias nunca são "agora"
+  if (slot.date && slot.date !== getTodayISODate()) return false;
   const nowStr = getCurrentTimeStr();
   return Math.abs(timeToMins(slot.time) - timeToMins(nowStr)) <= 5;
 }
@@ -746,9 +769,12 @@ function timeToMins(t) { const [h,m] = t.split(':').map(Number); return h*60+m; 
 
 function checkGrade() {
   if (!S.key) return;
+  const todayISO = getTodayISODate();
   const nowMins = timeToMins(getCurrentTimeStr());
   S.slots.forEach(slot => {
     if (slot.triggered || slot.status==='done' || slot.status==='generating') return;
+    // Só dispara slots do DIA DE HOJE — slots futuros aguardam a data certa
+    if (slot.date && slot.date !== todayISO) return;
     const diff = nowMins - timeToMins(slot.time);
     if (diff >= 0 && diff <= 10) {
       slot.triggered = true; slot.status = 'generating';
@@ -780,7 +806,7 @@ async function triggerSlot(slot) {
     videoUrl: null, taskId: null, progress: 5,
     createdAt: new Date().toISOString(),
     timeLabel: slot.time,
-    dateLabel: new Date().toLocaleDateString('pt-BR'),
+    dateLabel: slot.dateLabel || new Date().toLocaleDateString('pt-BR'), // ✅ usa a data DO SLOT, não a de agora
     weekLabel: getWeekLabel(new Date()),
     thumbColor: THUMBS[Math.floor(Math.random()*THUMBS.length)],
     fromSlot: slot.id,
