@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.9.7</title>
+<title>Live Life v5.10.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.9.7</div>
+    <div class="version-badge">v5.10.0</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
     <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
@@ -242,6 +242,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="nav-tabs">
   <div class="nav-tab active" onclick="navTo('grade')">📅 Grade</div>
   <div class="nav-tab" onclick="navTo('cena')">✍️ Cena</div>
+  <div class="nav-tab" onclick="navTo('podcast')">🎙️ Podcast</div>
   <div class="nav-tab" onclick="navTo('fila')">🎬 Fila</div>
   <div class="nav-tab" onclick="navTo('historico')">📋 Histórico</div>
   <div class="nav-tab" onclick="navTo('config')">⚙️ Config</div>
@@ -353,6 +354,65 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
   </div>
 </div>
 
+<!-- ════════ PODCAST / NOVELA AO VIVO ════════ -->
+
+<div class="page" id="page-podcast">
+
+  <div class="section">
+    <div class="sec-title"><div class="sec-dot" style="background:var(--purple)"></div>Cenário do episódio</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-weight:600">Descreva o ambiente onde a conversa acontece, ou envie uma foto de referência</div>
+
+    <textarea id="podcastScenarioDesc" placeholder="Ex: Estúdio de podcast aconchegante, dois microfones, luz quente, plantas ao fundo..." style="min-height:60px;margin-bottom:10px"></textarea>
+
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+      <label for="podcastScenarioUpload" class="btn btn-outline btn-sm" style="cursor:pointer;flex:1;text-align:center">📷 Enviar foto do cenário</label>
+      <input type="file" id="podcastScenarioUpload" accept="image/*" style="display:none" onchange="previewPodcastScenario(this)" />
+      <button class="btn btn-purple btn-sm" onclick="generatePodcastScenario()">✦ Gerar cenário</button>
+    </div>
+
+    <div id="podcastScenarioPreview" style="display:none;border-radius:12px;overflow:hidden;border:2px solid var(--purple);margin-top:8px">
+      <img id="podcastScenarioImg" style="width:100%;max-height:200px;object-fit:cover" />
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title" style="justify-content:space-between">
+      <span style="display:flex;align-items:center;gap:6px"><div class="sec-dot" style="background:var(--pink)"></div>Roteiro do episódio</span>
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="podcastAutoMode" style="width:16px;height:16px" />
+        IA responde sozinha
+      </label>
+    </div>
+
+    <div id="podcastScript" style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;margin-bottom:12px;padding-right:4px">
+      <div class="empty-state" style="padding:20px 0" id="podcastEmptyState">
+        <div class="empty-icon">🎙️</div>
+        <div class="empty-text">Escreva a primeira fala para começar o episódio!</div>
+      </div>
+    </div>
+
+    <div class="form-row" style="margin-bottom:8px">
+      <select id="podcastCharSel" style="flex:1">
+        <option value="mini_fran">👱‍♀️ Mini Fran</option>
+        <option value="parceiro">👨 Parceiro</option>
+        <option value="familia">👨‍👩‍👧 Família</option>
+      </select>
+    </div>
+    <textarea id="podcastLineInput" placeholder="Escreva a fala desse personagem..." style="min-height:60px;margin-bottom:8px"></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-pink btn-full" onclick="addPodcastLine()">+ Adicionar fala</button>
+      <button class="btn btn-purple btn-full" onclick="continueWithAI()">✦ Continuar com IA</button>
+    </div>
+
+    <div class="btn-row" style="margin-top:10px">
+      <button class="btn btn-mint btn-full" onclick="renderPodcastEpisode()">🎬 Gerar episódio e enviar ao vivo</button>
+      <button class="btn btn-ghost" onclick="clearPodcastScript()">🗑 Limpar roteiro</button>
+    </div>
+  </div>
+
+</div>
+
 <div class="page" id="page-fila">
   <div class="section">
     <div class="sec-title" style="justify-content:space-between">
@@ -391,6 +451,17 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <input type="text" id="proxyInput" placeholder="https://livelife-proxy.xxx.workers.dev" />
       </div>
       <button class="btn btn-pink btn-full" onclick="saveKey()">Conectar Runway</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-title"><div class="sec-dot" style="background:var(--blue)"></div>Google Cloud TTS (Podcast)</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-weight:600">Necessário para gerar voz dos personagens na aba Podcast</div>
+    <div class="settings-row">
+      <div>
+        <label>Chave de API (Google Cloud)</label>
+        <input type="password" id="ttsKeyInput" placeholder="AIzaSy..." />
+      </div>
+      <button class="btn btn-purple btn-full" onclick="saveTTSKey()">Conectar Google TTS</button>
     </div>
   </div>
   <div class="section">
@@ -517,7 +588,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.9.7';
+const VER = 'Live Life v5.10.0';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -1443,13 +1514,273 @@ function injectCastIntoPrompt(promptText, sceneText) {
   return {prompt:enhanced,photos};
 }
 
+// ════════════════════════════════════════════════
+//  🎙️ PODCAST / NOVELA AO VIVO — módulo conversacional
+// ════════════════════════════════════════════════
+const PODCAST_STORAGE_KEY = 'rw_podcastScript';
+
+const PODCAST = {
+  scenarioImageBase64: null, // foto enviada manualmente
+  scenarioImageUrl: null,    // imagem gerada via Runway
+  lines: JSON.parse(localStorage.getItem(PODCAST_STORAGE_KEY) || '[]'), // [{char, text, id}]
+};
+
+function savePodcastScript() {
+  localStorage.setItem(PODCAST_STORAGE_KEY, JSON.stringify(PODCAST.lines));
+}
+
+function previewPodcastScenario(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    PODCAST.scenarioImageBase64 = e.target.result;
+    PODCAST.scenarioImageUrl = null; // foto manual tem prioridade sobre gerada
+    document.getElementById('podcastScenarioImg').src = PODCAST.scenarioImageBase64;
+    document.getElementById('podcastScenarioPreview').style.display = 'block';
+    toast('📷 Cenário carregado!', 'ok');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function generatePodcastScenario() {
+  const desc = document.getElementById('podcastScenarioDesc').value.trim();
+  if (!desc) { toast('Descreva o cenário primeiro!', 'err'); return; }
+  if (!S.key) { toast('Configure a API key da Runway em Config!', 'err'); return; }
+
+  toast('⏳ Gerando cenário...');
+  try {
+    const prompt = `${desc}. Empty scene, no people, cinematic lighting, high quality, establishing shot.`;
+    const truncatedPrompt = prompt.length > 500 ? prompt.substring(0, 497) + '...' : prompt;
+    const imgTask = await callRunway('/text_to_image', 'POST', {
+      model: 'gen4_image',
+      promptText: truncatedPrompt,
+      ratio: '1280:720'
+    });
+    if (!imgTask.id) throw new Error('Falha ao criar task de imagem');
+
+    const start = Date.now();
+    let imageUrl = null;
+    while (Date.now() - start < 60000) {
+      await sleep(3000);
+      const poll = await callRunway('/tasks/' + imgTask.id, 'GET', null);
+      if (poll.status === 'SUCCEEDED') { imageUrl = poll.output[0]; break; }
+      if (poll.status === 'FAILED') throw new Error('Falha na geração: ' + (poll.failure||'desconhecido'));
+    }
+    if (!imageUrl) throw new Error('Timeout gerando cenário');
+
+    PODCAST.scenarioImageUrl = imageUrl;
+    PODCAST.scenarioImageBase64 = null; // gerada tem prioridade sobre foto antiga
+    document.getElementById('podcastScenarioImg').src = imageUrl;
+    document.getElementById('podcastScenarioPreview').style.display = 'block';
+    toast('✦ Cenário gerado!', 'ok');
+  } catch(e) {
+    toast('Erro: ' + e.message, 'err');
+  }
+}
+
+function addPodcastLine() {
+  const char = document.getElementById('podcastCharSel').value;
+  const text = document.getElementById('podcastLineInput').value.trim();
+  if (!text) { toast('Escreva a fala primeiro!', 'err'); return; }
+
+  PODCAST.lines.push({ id: 'line_'+Date.now(), char, text });
+  savePodcastScript();
+  document.getElementById('podcastLineInput').value = '';
+  renderPodcastScript();
+
+  const autoMode = document.getElementById('podcastAutoMode').checked;
+  if (autoMode) continueWithAI();
+}
+
+const PODCAST_CHAR_NAMES = { mini_fran: 'Mini Fran', parceiro: 'Parceiro', familia: 'Família' };
+const PODCAST_CHAR_EMOJI = { mini_fran: '👱‍♀️', parceiro: '👨', familia: '👨‍👩‍👧' };
+
+async function continueWithAI() {
+  if (!PODCAST.lines.length) { toast('Adicione a primeira fala antes!', 'err'); return; }
+
+  toast('✦ IA está pensando na resposta...');
+
+  // Monta o histórico da conversa pro Claude entender o contexto
+  const historico = PODCAST.lines.map(l => `${PODCAST_CHAR_NAMES[l.char]||l.char}: ${l.text}`).join('\n');
+  const personagensDisponiveis = Object.values(PODCAST_CHAR_NAMES).join(', ');
+  const ultimoChar = PODCAST.lines[PODCAST.lines.length - 1].char;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 200,
+        messages: [{
+          role: 'user',
+          content: `Você está escrevendo um roteiro de podcast/novela em português brasileiro, estilo conversa natural e espontânea.
+
+Personagens disponíveis: ${personagensDisponiveis}
+
+Conversa até agora:
+${historico}
+
+Escreva a PRÓXIMA fala da conversa (de um personagem diferente de quem falou por último, se fizer sentido). Responda APENAS no formato:
+NOME_PERSONAGEM: texto da fala
+
+Seja natural, breve (1-3 frases), e mantenha o tom de conversa espontânea de podcast.`
+        }]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content[0].text.trim();
+
+    // Parse "Nome: texto"
+    const match = reply.match(/^([^:]+):\s*(.+)$/s);
+    if (!match) throw new Error('Resposta da IA em formato inesperado');
+
+    const nomeFalado = match[1].trim().toLowerCase();
+    const textoFala = match[2].trim();
+
+    // Acha a key do personagem pelo nome
+    let charKey = Object.keys(PODCAST_CHAR_NAMES).find(k => PODCAST_CHAR_NAMES[k].toLowerCase() === nomeFalado);
+    if (!charKey) charKey = ultimoChar === 'mini_fran' ? 'parceiro' : 'mini_fran'; // fallback
+
+    PODCAST.lines.push({ id: 'line_'+Date.now(), char: charKey, text: textoFala });
+    savePodcastScript();
+    renderPodcastScript();
+    toast('✦ IA respondeu!', 'ok');
+  } catch(e) {
+    toast('Erro na IA: ' + e.message, 'err');
+  }
+}
+
+function deletePodcastLine(id) {
+  PODCAST.lines = PODCAST.lines.filter(l => l.id !== id);
+  savePodcastScript();
+  renderPodcastScript();
+}
+
+function clearPodcastScript() {
+  if (!PODCAST.lines.length) { toast('Roteiro já está vazio!'); return; }
+  if (!confirm('Limpar todo o roteiro do episódio atual?')) return;
+  PODCAST.lines = [];
+  savePodcastScript();
+  renderPodcastScript();
+  toast('Roteiro limpo!');
+}
+
+function renderPodcastScript() {
+  const el = document.getElementById('podcastScript');
+  if (!el) return;
+  if (!PODCAST.lines.length) {
+    el.innerHTML = `<div class="empty-state" style="padding:20px 0" id="podcastEmptyState"><div class="empty-icon">🎙️</div><div class="empty-text">Escreva a primeira fala para começar o episódio!</div></div>`;
+    return;
+  }
+  el.innerHTML = PODCAST.lines.map(l => `
+    <div style="display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px 12px">
+      <div style="font-size:22px;flex-shrink:0">${PODCAST_CHAR_EMOJI[l.char]||'🎙️'}</div>
+      <div style="flex:1">
+        <div style="font-size:11px;font-weight:800;color:var(--purple);font-family:'Fredoka',sans-serif;margin-bottom:2px">${PODCAST_CHAR_NAMES[l.char]||l.char}</div>
+        <div style="font-size:13px;line-height:1.5">${l.text}</div>
+      </div>
+      <button onclick="deletePodcastLine('${l.id}')" style="background:none;border:none;font-size:14px;cursor:pointer;color:var(--text2);flex-shrink:0">🗑</button>
+    </div>`).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+// Gera o episódio: 1 imagem de cenário (já temos) + áudio TTS de
+// cada fala em sequência, concatenado, e manda pro stream local.
+async function renderPodcastEpisode() {
+  if (!PODCAST.lines.length) { toast('Escreva o roteiro primeiro!', 'err'); return; }
+  const cenarioUrl = PODCAST.scenarioImageUrl || PODCAST.scenarioImageBase64;
+  if (!cenarioUrl) { toast('Defina um cenário primeiro (gerar ou enviar foto)!', 'err'); return; }
+
+  toast('🎙️ Gerando áudio do episódio...');
+
+  try {
+    // Gera o áudio de cada fala via TTS, em sequência
+    const audioClips = [];
+    for (const line of PODCAST.lines) {
+      const audioBase64 = await synthesizeSpeech(line.text, line.char);
+      audioClips.push({ char: line.char, text: line.text, audioBase64 });
+    }
+
+    const now = new Date();
+    const episode = {
+      id: 'ep_' + Date.now(),
+      type: 'podcast',
+      freeText: `🎙️ Episódio: ${PODCAST.lines[0].text.substring(0,40)}...`,
+      scenarioImage: cenarioUrl,
+      lines: audioClips,
+      status: 'done',
+      timeLabel: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+      dateLabel: now.toLocaleDateString('pt-BR'),
+      airTime: document.getElementById('airTimeInput') ? document.getElementById('airTimeInput').value || null : null,
+    };
+
+    // Manda pro servidor local processar (juntar imagem + áudios em vídeo)
+    await syncPodcastEpisodeToServer(episode);
+    toast('✅ Episódio enviado para o stream!', 'ok');
+
+  } catch(e) {
+    toast('Erro: ' + e.message, 'err');
+  }
+}
+
+// Síntese de voz via Google Cloud TTS.
+// NOTA: precisa de uma API key do Google Cloud TTS configurada
+// em Config (campo separado da key da Runway).
+async function synthesizeSpeech(text, charKey) {
+  const ttsKey = localStorage.getItem('rw_ttsKey');
+  if (!ttsKey) throw new Error('Configure a API key do Google TTS em Config!');
+
+  // Vozes diferentes por personagem (vozes em português do Google TTS)
+  const voiceMap = {
+    mini_fran: { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-A', ssmlGender: 'FEMALE' },
+    parceiro:  { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-B', ssmlGender: 'MALE' },
+    familia:   { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-C', ssmlGender: 'MALE' },
+  };
+  const voice = voiceMap[charKey] || voiceMap.mini_fran;
+
+  const res = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${ttsKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      input: { text },
+      voice,
+      audioConfig: { audioEncoding: 'MP3' },
+    })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'Erro no TTS');
+  return data.audioContent; // base64 MP3
+}
+
+async function syncPodcastEpisodeToServer(episode) {
+  try {
+    const res = await fetch(LOCAL_SERVER_URL + '/podcast-episode', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(episode),
+      signal: AbortSignal.timeout(15000) // áudio pode ser grande, timeout maior
+    });
+    if (!res.ok) throw new Error('Servidor local recusou o episódio');
+    localServerOnline = true;
+    updateServerDot();
+  } catch(e) {
+    localServerOnline = false;
+    updateServerDot();
+    throw new Error('Servidor local offline — rode: node server.js');
+  }
+}
+
 function navTo(name) {
+
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach((t,i)=>{t.classList.toggle('active',['grade','cena','fila','historico','config'][i]===name);});
+  document.querySelectorAll('.nav-tab').forEach((t,i)=>{t.classList.toggle('active',['grade','cena','podcast','fila','historico','config'][i]===name);});
   const page=document.getElementById('page-'+name); if(page)page.classList.add('active');
   if(name==='historico'){renderSummary();renderHistory();}
   if(name==='fila')renderGrid();
-  if(name==='config'){const inp=document.getElementById('apiInput');if(inp)inp.value=S.key?'••••••••••••••••':'';}
+  if(name==='podcast')renderPodcastScript();
+  if(name==='config'){const inp=document.getElementById('apiInput');if(inp)inp.value=S.key?'••••••••••••••••':'';const ttsInp=document.getElementById('ttsKeyInput');if(ttsInp)ttsInp.value=localStorage.getItem('rw_ttsKey')?'••••••••••••••••':'';}
 }
 
 function saveKey(){
@@ -1461,6 +1792,13 @@ function saveKey(){
   if(p){S.proxyUrl=p;localStorage.setItem('rw_proxy',p);}
   document.getElementById('apiInput').value='••••••••••••••••';
   setDot(true);toast('✅ Runway conectado!','ok');
+}
+function saveTTSKey(){
+  const k=document.getElementById('ttsKeyInput').value.trim();
+  if(!k||k.includes('•')){toast('Cole sua API key do Google TTS!','err');return;}
+  localStorage.setItem('rw_ttsKey',k);
+  document.getElementById('ttsKeyInput').value='••••••••••••••••';
+  toast('✅ Google TTS conectado!','ok');
 }
 function setDot(on){document.getElementById('apiDot').className='dot '+(on?'on':'err');document.getElementById('apiTxt').textContent=on?'on':'off';}
 function clearGrade(){S.slots=[];saveSlots();renderTimeline();toast('Grade limpa!');}
