@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.10.1</title>
+<title>Live Life v5.10.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.10.1</div>
+    <div class="version-badge">v5.10.2</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
     <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
@@ -382,6 +382,18 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
         <input type="checkbox" id="podcastAutoMode" style="width:16px;height:16px" />
         IA responde sozinha
       </label>
+    </div>
+
+    <!-- ASSUNTO ATUAL — visível e editável a qualquer momento -->
+    <div style="background:var(--purple-light);border:2px solid var(--purple);border-radius:12px;padding:10px 12px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:0.05em;font-family:'Fredoka',sans-serif;margin-bottom:4px">🎯 Assunto atual</div>
+      <div id="podcastCurrentTopic" style="font-size:13px;font-weight:700;color:var(--text)">Nenhum assunto definido ainda</div>
+    </div>
+
+    <!-- DIREÇÃO: trocar de assunto a qualquer momento -->
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <input type="text" id="podcastNewTopicInput" placeholder="Ex: agora vamos falar sobre viagens..." style="flex:1" />
+      <button class="btn btn-yellow btn-sm" onclick="changePodcastTopic()" style="white-space:nowrap">🔀 Mudar assunto</button>
     </div>
 
     <div id="podcastScript" style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;margin-bottom:12px;padding-right:4px">
@@ -581,7 +593,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.10.1';
+const VER = 'Live Life v5.10.2';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -1511,15 +1523,45 @@ function injectCastIntoPrompt(promptText, sceneText) {
 //  🎙️ PODCAST / NOVELA AO VIVO — módulo conversacional
 // ════════════════════════════════════════════════
 const PODCAST_STORAGE_KEY = 'rw_podcastScript';
+const PODCAST_TOPIC_KEY = 'rw_podcastTopic';
 
 const PODCAST = {
   scenarioImageBase64: null, // foto enviada manualmente
   scenarioImageUrl: null,    // imagem gerada via Runway
-  lines: JSON.parse(localStorage.getItem(PODCAST_STORAGE_KEY) || '[]'), // [{char, text, id}]
+  lines: JSON.parse(localStorage.getItem(PODCAST_STORAGE_KEY) || '[]'), // [{char, text, id, isTopicMarker?}]
+  currentTopic: localStorage.getItem(PODCAST_TOPIC_KEY) || null,
 };
 
 function savePodcastScript() {
   localStorage.setItem(PODCAST_STORAGE_KEY, JSON.stringify(PODCAST.lines));
+}
+
+function savePodcastTopic() {
+  if (PODCAST.currentTopic) localStorage.setItem(PODCAST_TOPIC_KEY, PODCAST.currentTopic);
+  else localStorage.removeItem(PODCAST_TOPIC_KEY);
+}
+
+// Muda o assunto atual a qualquer momento — insere um marcador
+// visível no roteiro (pra você ver onde mudou) e atualiza o
+// "assunto atual" que a IA vai respeitar nas próximas falas.
+function changePodcastTopic() {
+  const input = document.getElementById('podcastNewTopicInput');
+  const novoAssunto = input.value.trim();
+  if (!novoAssunto) { toast('Escreva o novo assunto!', 'err'); return; }
+
+  PODCAST.currentTopic = novoAssunto;
+  savePodcastTopic();
+
+  // Marcador visual no roteiro — não vira fala/áudio, só direção
+  if (PODCAST.lines.length) {
+    PODCAST.lines.push({ id: 'topic_'+Date.now(), isTopicMarker: true, text: novoAssunto });
+    savePodcastScript();
+  }
+
+  document.getElementById('podcastCurrentTopic').textContent = novoAssunto;
+  input.value = '';
+  renderPodcastScript();
+  toast('🔀 Assunto alterado! A IA vai seguir esse novo tema.', 'ok');
 }
 
 function previewPodcastScenario(input) {
@@ -1590,14 +1632,28 @@ const PODCAST_CHAR_NAMES = { mini_fran: 'Mini Fran', parceiro: 'Parceiro', famil
 const PODCAST_CHAR_EMOJI = { mini_fran: '👱‍♀️', parceiro: '👨', familia: '👨‍👩‍👧' };
 
 async function continueWithAI() {
-  if (!PODCAST.lines.length) { toast('Adicione a primeira fala antes!', 'err'); return; }
+  const falas = PODCAST.lines.filter(l => !l.isTopicMarker);
+  if (!falas.length) { toast('Adicione a primeira fala antes!', 'err'); return; }
 
   toast('✦ IA está pensando na resposta...');
 
-  // Monta o histórico da conversa pro Claude entender o contexto
-  const historico = PODCAST.lines.map(l => `${PODCAST_CHAR_NAMES[l.char]||l.char}: ${l.text}`).join('\n');
+  // Monta o histórico considerando SOMENTE o que veio depois da
+  // última troca de assunto — assim a IA não fica presa ao tema
+  // antigo depois que você redireciona a conversa.
+  const ultimoMarcadorIdx = PODCAST.lines.map(l => l.isTopicMarker).lastIndexOf(true);
+  const linhasRelevantes = ultimoMarcadorIdx >= 0
+    ? PODCAST.lines.slice(ultimoMarcadorIdx + 1).filter(l => !l.isTopicMarker)
+    : falas;
+
+  const historico = linhasRelevantes.length
+    ? linhasRelevantes.map(l => `${PODCAST_CHAR_NAMES[l.char]||l.char}: ${l.text}`).join('\n')
+    : '(início da conversa sobre esse assunto)';
+
   const personagensDisponiveis = Object.values(PODCAST_CHAR_NAMES).join(', ');
-  const ultimoChar = PODCAST.lines[PODCAST.lines.length - 1].char;
+  const ultimoChar = falas[falas.length - 1].char;
+  const assuntoAtual = PODCAST.currentTopic
+    ? `\nASSUNTO ATUAL que a conversa deve seguir agora: "${PODCAST.currentTopic}"\n`
+    : '';
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1611,11 +1667,11 @@ async function continueWithAI() {
           content: `Você está escrevendo um roteiro de podcast/novela em português brasileiro, estilo conversa natural e espontânea.
 
 Personagens disponíveis: ${personagensDisponiveis}
-
+${assuntoAtual}
 Conversa até agora:
 ${historico}
 
-Escreva a PRÓXIMA fala da conversa (de um personagem diferente de quem falou por último, se fizer sentido). Responda APENAS no formato:
+Escreva a PRÓXIMA fala da conversa (de um personagem diferente de quem falou por último, se fizer sentido)${assuntoAtual ? ', mantendo o foco no ASSUNTO ATUAL indicado acima' : ''}. Responda APENAS no formato:
 NOME_PERSONAGEM: texto da fala
 
 Seja natural, breve (1-3 frases), e mantenha o tom de conversa espontânea de podcast.`
@@ -1625,16 +1681,14 @@ Seja natural, breve (1-3 frases), e mantenha o tom de conversa espontânea de po
     const data = await res.json();
     const reply = data.content[0].text.trim();
 
-    // Parse "Nome: texto"
     const match = reply.match(/^([^:]+):\s*(.+)$/s);
     if (!match) throw new Error('Resposta da IA em formato inesperado');
 
     const nomeFalado = match[1].trim().toLowerCase();
     const textoFala = match[2].trim();
 
-    // Acha a key do personagem pelo nome
     let charKey = Object.keys(PODCAST_CHAR_NAMES).find(k => PODCAST_CHAR_NAMES[k].toLowerCase() === nomeFalado);
-    if (!charKey) charKey = ultimoChar === 'mini_fran' ? 'parceiro' : 'mini_fran'; // fallback
+    if (!charKey) charKey = ultimoChar === 'mini_fran' ? 'parceiro' : 'mini_fran';
 
     PODCAST.lines.push({ id: 'line_'+Date.now(), char: charKey, text: textoFala });
     savePodcastScript();
@@ -1646,8 +1700,15 @@ Seja natural, breve (1-3 frases), e mantenha o tom de conversa espontânea de po
 }
 
 function deletePodcastLine(id) {
+  const item = PODCAST.lines.find(l => l.id === id);
   PODCAST.lines = PODCAST.lines.filter(l => l.id !== id);
   savePodcastScript();
+  // Se apagou o marcador de tópico atual, limpa o indicador também
+  if (item && item.isTopicMarker && item.text === PODCAST.currentTopic) {
+    PODCAST.currentTopic = null;
+    savePodcastTopic();
+    document.getElementById('podcastCurrentTopic').textContent = 'Nenhum assunto definido ainda';
+  }
   renderPodcastScript();
 }
 
@@ -1655,7 +1716,10 @@ function clearPodcastScript() {
   if (!PODCAST.lines.length) { toast('Roteiro já está vazio!'); return; }
   if (!confirm('Limpar todo o roteiro do episódio atual?')) return;
   PODCAST.lines = [];
+  PODCAST.currentTopic = null;
   savePodcastScript();
+  savePodcastTopic();
+  document.getElementById('podcastCurrentTopic').textContent = 'Nenhum assunto definido ainda';
   renderPodcastScript();
   toast('Roteiro limpo!');
 }
@@ -1663,26 +1727,40 @@ function clearPodcastScript() {
 function renderPodcastScript() {
   const el = document.getElementById('podcastScript');
   if (!el) return;
+
+  // Atualiza o indicador de assunto atual sempre que renderiza
+  const topicEl = document.getElementById('podcastCurrentTopic');
+  if (topicEl) topicEl.textContent = PODCAST.currentTopic || 'Nenhum assunto definido ainda';
+
   if (!PODCAST.lines.length) {
     el.innerHTML = `<div class="empty-state" style="padding:20px 0" id="podcastEmptyState"><div class="empty-icon">🎙️</div><div class="empty-text">Escreva a primeira fala para começar o episódio!</div></div>`;
     return;
   }
-  el.innerHTML = PODCAST.lines.map(l => `
-    <div style="display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px 12px">
+  el.innerHTML = PODCAST.lines.map(l => {
+    if (l.isTopicMarker) {
+      return `<div style="display:flex;align-items:center;gap:8px;margin:6px 0">
+        <div style="flex:1;height:2px;background:var(--yellow)"></div>
+        <div style="font-size:11px;font-weight:800;color:#b87a00;background:var(--yellow-light);padding:4px 10px;border-radius:20px;font-family:'Fredoka',sans-serif;white-space:nowrap">🔀 ${l.text}</div>
+        <div style="flex:1;height:2px;background:var(--yellow)"></div>
+      </div>`;
+    }
+    return `<div style="display:flex;gap:10px;align-items:flex-start;background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:10px 12px">
       <div style="font-size:22px;flex-shrink:0">${PODCAST_CHAR_EMOJI[l.char]||'🎙️'}</div>
       <div style="flex:1">
         <div style="font-size:11px;font-weight:800;color:var(--purple);font-family:'Fredoka',sans-serif;margin-bottom:2px">${PODCAST_CHAR_NAMES[l.char]||l.char}</div>
         <div style="font-size:13px;line-height:1.5">${l.text}</div>
       </div>
       <button onclick="deletePodcastLine('${l.id}')" style="background:none;border:none;font-size:14px;cursor:pointer;color:var(--text2);flex-shrink:0">🗑</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   el.scrollTop = el.scrollHeight;
 }
 
 // Gera o episódio: 1 imagem de cenário (já temos) + áudio TTS de
 // cada fala em sequência, concatenado, e manda pro stream local.
 async function renderPodcastEpisode() {
-  if (!PODCAST.lines.length) { toast('Escreva o roteiro primeiro!', 'err'); return; }
+  const falas = PODCAST.lines.filter(l => !l.isTopicMarker);
+  if (!falas.length) { toast('Escreva o roteiro primeiro!', 'err'); return; }
   const cenarioUrl = PODCAST.scenarioImageUrl || PODCAST.scenarioImageBase64;
   if (!cenarioUrl) { toast('Defina um cenário primeiro (gerar ou enviar foto)!', 'err'); return; }
 
@@ -1693,9 +1771,9 @@ async function renderPodcastEpisode() {
     const episode = {
       id: 'ep_' + Date.now(),
       type: 'podcast',
-      freeText: `🎙️ Episódio: ${PODCAST.lines[0].text.substring(0,40)}...`,
+      freeText: `🎙️ Episódio: ${falas[0].text.substring(0,40)}...`,
       scenarioImage: cenarioUrl,
-      lines: PODCAST.lines.map(l => ({ char: l.char, text: l.text })), // texto puro — servidor faz o TTS
+      lines: falas.map(l => ({ char: l.char, text: l.text })), // só falas reais — marcadores de tópico ficam de fora
       status: 'done',
       timeLabel: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
       dateLabel: now.toLocaleDateString('pt-BR'),
