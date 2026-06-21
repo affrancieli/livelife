@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.10.0</title>
+<title>Live Life v5.10.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.10.0</div>
+    <div class="version-badge">v5.10.1</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
     <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
@@ -454,15 +454,8 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
     </div>
   </div>
   <div class="section">
-    <div class="sec-title"><div class="sec-dot" style="background:var(--blue)"></div>Google Cloud TTS (Podcast)</div>
-    <div style="font-size:11px;color:var(--text2);margin-bottom:10px;font-weight:600">Necessário para gerar voz dos personagens na aba Podcast</div>
-    <div class="settings-row">
-      <div>
-        <label>Chave de API (Google Cloud)</label>
-        <input type="password" id="ttsKeyInput" placeholder="AIzaSy..." />
-      </div>
-      <button class="btn btn-purple btn-full" onclick="saveTTSKey()">Conectar Google TTS</button>
-    </div>
+    <div class="sec-title"><div class="sec-dot" style="background:var(--blue)"></div>🎙️ Voz do Podcast</div>
+    <div style="font-size:11px;color:var(--text2);font-weight:600;line-height:1.6">A síntese de voz usa o comando nativo do macOS (gratuito, sem API key). Funciona automaticamente assim que o <code>server.js</code> estiver rodando no seu Mac.</div>
   </div>
   <div class="section">
     <div class="sec-title" style="justify-content:space-between">
@@ -588,7 +581,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.10.0';
+const VER = 'Live Life v5.10.1';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -1693,32 +1686,26 @@ async function renderPodcastEpisode() {
   const cenarioUrl = PODCAST.scenarioImageUrl || PODCAST.scenarioImageBase64;
   if (!cenarioUrl) { toast('Defina um cenário primeiro (gerar ou enviar foto)!', 'err'); return; }
 
-  toast('🎙️ Gerando áudio do episódio...');
+  toast('🎙️ Enviando episódio para processamento...');
 
   try {
-    // Gera o áudio de cada fala via TTS, em sequência
-    const audioClips = [];
-    for (const line of PODCAST.lines) {
-      const audioBase64 = await synthesizeSpeech(line.text, line.char);
-      audioClips.push({ char: line.char, text: line.text, audioBase64 });
-    }
-
     const now = new Date();
     const episode = {
       id: 'ep_' + Date.now(),
       type: 'podcast',
       freeText: `🎙️ Episódio: ${PODCAST.lines[0].text.substring(0,40)}...`,
       scenarioImage: cenarioUrl,
-      lines: audioClips,
+      lines: PODCAST.lines.map(l => ({ char: l.char, text: l.text })), // texto puro — servidor faz o TTS
       status: 'done',
       timeLabel: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
       dateLabel: now.toLocaleDateString('pt-BR'),
       airTime: document.getElementById('airTimeInput') ? document.getElementById('airTimeInput').value || null : null,
     };
 
-    // Manda pro servidor local processar (juntar imagem + áudios em vídeo)
+    // Manda pro servidor local: ele sintetiza a voz de cada fala
+    // (via comando "say" do macOS) E junta tudo num vídeo final.
     await syncPodcastEpisodeToServer(episode);
-    toast('✅ Episódio enviado para o stream!', 'ok');
+    toast('✅ Episódio enviado! Processando no servidor local...', 'ok');
 
   } catch(e) {
     toast('Erro: ' + e.message, 'err');
@@ -1728,31 +1715,8 @@ async function renderPodcastEpisode() {
 // Síntese de voz via Google Cloud TTS.
 // NOTA: precisa de uma API key do Google Cloud TTS configurada
 // em Config (campo separado da key da Runway).
-async function synthesizeSpeech(text, charKey) {
-  const ttsKey = localStorage.getItem('rw_ttsKey');
-  if (!ttsKey) throw new Error('Configure a API key do Google TTS em Config!');
+// Síntese de voz via comando NATIVO do macOS ("say"), processado
 
-  // Vozes diferentes por personagem (vozes em português do Google TTS)
-  const voiceMap = {
-    mini_fran: { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-A', ssmlGender: 'FEMALE' },
-    parceiro:  { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-B', ssmlGender: 'MALE' },
-    familia:   { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-C', ssmlGender: 'MALE' },
-  };
-  const voice = voiceMap[charKey] || voiceMap.mini_fran;
-
-  const res = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${ttsKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      input: { text },
-      voice,
-      audioConfig: { audioEncoding: 'MP3' },
-    })
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message || 'Erro no TTS');
-  return data.audioContent; // base64 MP3
-}
 
 async function syncPodcastEpisodeToServer(episode) {
   try {
@@ -1780,7 +1744,7 @@ function navTo(name) {
   if(name==='historico'){renderSummary();renderHistory();}
   if(name==='fila')renderGrid();
   if(name==='podcast')renderPodcastScript();
-  if(name==='config'){const inp=document.getElementById('apiInput');if(inp)inp.value=S.key?'••••••••••••••••':'';const ttsInp=document.getElementById('ttsKeyInput');if(ttsInp)ttsInp.value=localStorage.getItem('rw_ttsKey')?'••••••••••••••••':'';}
+  if(name==='config'){const inp=document.getElementById('apiInput');if(inp)inp.value=S.key?'••••••••••••••••':'';}
 }
 
 function saveKey(){
@@ -1792,13 +1756,6 @@ function saveKey(){
   if(p){S.proxyUrl=p;localStorage.setItem('rw_proxy',p);}
   document.getElementById('apiInput').value='••••••••••••••••';
   setDot(true);toast('✅ Runway conectado!','ok');
-}
-function saveTTSKey(){
-  const k=document.getElementById('ttsKeyInput').value.trim();
-  if(!k||k.includes('•')){toast('Cole sua API key do Google TTS!','err');return;}
-  localStorage.setItem('rw_ttsKey',k);
-  document.getElementById('ttsKeyInput').value='••••••••••••••••';
-  toast('✅ Google TTS conectado!','ok');
 }
 function setDot(on){document.getElementById('apiDot').className='dot '+(on?'on':'err');document.getElementById('apiTxt').textContent=on?'on':'off';}
 function clearGrade(){S.slots=[];saveSlots();renderTimeline();toast('Grade limpa!');}
