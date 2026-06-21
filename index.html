@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Live Life v5.9.6</title>
+<title>Live Life v5.9.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&family=Nunito:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -232,7 +232,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <header>
   <div class="logo">🎬 Live Life</div>
   <div class="hright">
-    <div class="version-badge">v5.9.6</div>
+    <div class="version-badge">v5.9.7</div>
     <div class="clock-pill" id="liveClock">--:--</div>
     <div class="api-pill"><div class="dot" id="apiDot"></div><span id="apiTxt">API</span></div>
     <div class="api-pill" title="Servidor local de stream (node server.js)"><div class="dot" id="serverDot"></div><span id="serverTxt">stream</span></div>
@@ -517,7 +517,7 @@ textarea::placeholder, input::placeholder { color:var(--text2); font-weight:400;
 <div class="toasts" id="toasts"></div>
 
 <script charset="utf-8">
-const VER = 'Live Life v5.9.6';
+const VER = 'Live Life v5.9.7';
 
 const RUNWAY_KEY = 'key_fd0b76edfa30064bdb345260a71afab8e418936b355dd2c8ee45972e34432ca5926b6d996aa73931c2df45f0586d77064706dc54ac53b760b5bb72599128afc3';
 const PROXY_URL = 'https://blue-base-9603.af-francieli.workers.dev';
@@ -1220,13 +1220,26 @@ function clearAll() {
 
 function reuseSceneDirect(id) {
   const orig = S.scenes.find(x=>x.id===id); if (!orig) return;
+
+  // ✅ Pergunta o novo horário de exibição — nunca herda o
+  // airTime da cena original, que pode já ter passado ou ser de outro dia.
   const now = new Date();
+  const horaSugerida = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const novoHorario = prompt(`Reutilizar "${orig.freeText.substring(0,40)}"\n\nDefina o horário de exibição (HH:MM) ou deixe em branco para entrar na fila livre:`, horaSugerida);
+
+  // Cancelou o prompt — não reutiliza nada
+  if (novoHorario === null) return;
+
+  const airTimeValido = /^\d{2}:\d{2}$/.test(novoHorario.trim()) ? novoHorario.trim() : null;
+
   const copy = { ...orig, id:'sc_'+Date.now(), status:'reused', isReuse:true, reuseFrom:id,
     timeLabel:now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
-    dateLabel:now.toLocaleDateString('pt-BR'), weekLabel:getWeekLabel(now), airTime:null, progress:100 };
+    dateLabel:now.toLocaleDateString('pt-BR'), weekLabel:getWeekLabel(now),
+    airTime: airTimeValido, // ✅ horário novo escolhido agora, nunca o antigo
+    progress:100 };
   S.scenes.unshift(copy); save(); renderGrid(); renderSummary();
   syncSceneToServer(copy);
-  toast('♻️ Cena reutilizada - sem gastar crédito!', 'ok');
+  toast(airTimeValido ? `♻️ Reutilizada — vai ao ar às ${airTimeValido}!` : '♻️ Cena reutilizada na fila livre!', 'ok');
 }
 
 function deleteScene(id) { S.scenes = S.scenes.filter(x=>x.id!==id); save(); renderGrid(); renderSummary(); toast('Cena removida!'); }
@@ -1283,7 +1296,19 @@ function openModal(id) {
   document.getElementById('modal').classList.add('open');
 }
 function closeModal(){document.getElementById('modal').classList.remove('open');S.activeModal=null;}
-function reuseModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s)return;document.getElementById('freeInput').value=s.freeText;S.convertedPrompt=s.prompt;document.getElementById('convText').textContent=s.prompt;document.getElementById('convBox').style.display='block';closeModal();navTo('cena');toast('Cena carregada!');}
+function reuseModal(){
+  const s=S.scenes.find(x=>x.id===S.activeModal);if(!s)return;
+  document.getElementById('freeInput').value=s.freeText;
+  S.convertedPrompt=s.prompt;
+  document.getElementById('convText').textContent=s.prompt;
+  document.getElementById('convBox').style.display='block';
+  // ✅ FIX: limpa o horário "Ir ao ar" — reutilizar uma cena antiga
+  // não deve herdar o horário programado dela. Força escolher um novo.
+  const airInput = document.getElementById('airTimeInput');
+  if (airInput) airInput.value = '';
+  closeModal();navTo('cena');
+  toast('Cena carregada! Defina um novo horário de exibição, se quiser.');
+}
 function dlModal(){const s=S.scenes.find(x=>x.id===S.activeModal);if(!s||!s.videoUrl){toast('Vídeo não gerado ainda','err');return;}const a=document.createElement('a');a.href=s.videoUrl;a.download=`cena_${s.timeLabel.replace(':','-')}.mp4`;a.click();}
 function delModal(){S.scenes=S.scenes.filter(x=>x.id!==S.activeModal);save();closeModal();renderGrid();renderSummary();toast('Cena excluída!');}
 
